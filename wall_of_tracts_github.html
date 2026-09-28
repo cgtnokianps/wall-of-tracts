@@ -678,7 +678,10 @@
             container.innerHTML = `<div class="card-preview-placeholder"><p>📄 ${tract.title}</p></div>`;
             if (tract.pdfPath) {
                 container.style.cursor = 'pointer';
-                container.onclick = () => window.open(tract.pdfPath, '_blank');
+                container.onclick = () => {
+                    const url = new URL(tract.pdfPath, window.location.href).href;
+                    window.open(url, '_blank');
+                };
             } else {
                 container.style.cursor = 'default';
             }
@@ -701,7 +704,10 @@
                 container.appendChild(img);
                 if (tract.pdfPath) {
                     container.style.cursor = 'pointer';
-                    container.onclick = () => window.open(tract.pdfPath, '_blank');
+                    container.onclick = () => {
+                        const url = new URL(tract.pdfPath, window.location.href).href;
+                        window.open(url, '_blank');
+                    };
                 }
             };
             img.src = tract.previewPath;
