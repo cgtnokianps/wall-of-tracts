@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracts CGT-NPS</title>    
+    <style>
+        :root {
+            --bg: #0f1115;
+            --surface: #1a1d24;
+            --surface-2: #22262f;
+            --border: #2e333d;
+            --text: #e8eaed;
+            --text-muted: #9aa0aa;
+            --accent: #e63946;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI Variable Text', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Roboto, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--text);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: var(--text-muted);
+        }
+
+        .year-section {
+            margin-bottom: 50px;
+        }
+
+        .year-separator {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .year-separator::before,
+        .year-separator::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .year-separator-label {
+            font-size: 1.35em;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            color: var(--text);
+            padding: 6px 22px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--surface);
+            white-space: nowrap;
+        }
+
+        .year-title {
+            color: var(--text);
+            font-size: 1.8em;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+        }
+
+        .card-preview {
+            width: 100%;
+            height: 350px;
+            background: var(--surface-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .card-preview canvas,
+        .card-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .card-preview-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9em;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .card-preview-placeholder.loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card-content {
+            padding: 18px 20px 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+        }
+
+        .card-meta {
+            font-size: 0.72em;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .card-summary {
+            font-size: 0.82em;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+
+        .card-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        .btn-disabled {
+            background: var(--surface-2);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .btn-disabled:hover {
+            transform: none;
+        }
+
+        .btn-label {
+            display: inline-block;
+            font-size: 0.75em;
+            background: var(--surface-2);
+            color: var(--text-muted);
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .card-preview {
+                height: 250px;
+            }
+        }
+    </style>
+
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_dlc_DocId msdt:dt="string">AUIRPTAIMRO3-1066683228-25235</mso:_dlc_DocId>
+<mso:_dlc_DocIdItemGuid msdt:dt="string">4a212cf1-f10a-4445-84ec-1e0e532064b4</mso:_dlc_DocIdItemGuid>
+<mso:_dlc_DocIdUrl msdt:dt="string">https://nokia.sharepoint.com/sites/CGT39/_layouts/15/DocIdRedir.aspx?ID=AUIRPTAIMRO3-1066683228-25235, AUIRPTAIMRO3-1066683228-25235</mso:_dlc_DocIdUrl>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Tracts CGT NPS</h1>
+        </div>
+
+        <div id="content"></div>
+    </div>
+
+    <script>
+        const tractsData = {
+            '2022': [
+                {
+                    id: 102,
+                    title: 'Santé et Prévoyance — ce qui change en 2022',
+                    pdfPath: '2022/Tract_Santé_Prévoyance_Mars_2022 nps.pdf',
+                    previewPath: '2022/Tract_Santé_Prévoyance_Mars_2022 nps_page-0001.jpg'
+                },
+                {
+                    id: 103,
+                    title: 'Désaccords en cascade',
+                    pdfPath: '2022/Tract CGT desaccords en cascade 03-06-2022.pdf',
+                    previewPath: '2022/Tract CGT desaccords en cascade 03-06-2022_page-0001.jpg'
+                },
+                {
+                    id: 104,
+                    title: 'Brèves d\'été',
+                    pdfPath: '2022/Tract brèves d\'été.pdf',
+                    previewPath: '2022/Tract brèves d\'été_page-0001.jpg'
+                },
+                {
+                    id: 105,
+                    title: 'Déménagement : la CGT vous informe',
+                    pdfPath: '2022/Tract demenagement 06-09-22.pdf',
+                    previewPath: '2022/Tract demenagement 06-09-22_page-0001.jpg'
+                },
+                {
+                    id: 106,
+                    title: 'Manif du 29 septembre — Candidatures aux élections',
+                    pdfPath: '2022/Manif29septembre CandidaturesElection.pdf',
+                    previewPath: '2022/Manif29septembre CandidaturesElection_page-0001.jpg'
+                },
+                {
+                    id: 107,
+                    title: 'Ce que veulent les cadres — Baromètre UGICT / Viavoice',
+                    pdfPath: '2022/Ce que veulent les Cadres -Synthèse Baromètre Cadres UGICT Viavoice octobre 2022.pdf',
+                    previewPath: '2022/Ce que veulent les Cadres -Synthèse Baromètre Cadres UGICT Viavoice octobre 2022_page-0001.jpg'
+                },
+                {
+                    id: 108,
+                    title: 'Retour du sondage CGT sur les navettes',
+                    pdfPath: '2022/Retour Sondage CGT Navettes Octobre 2022.pdf',
+                    previewPath: '2022/Retour Sondage CGT Navettes Octobre 2022_page-0001.jpg'
+                },
+                {
+                    id: 109,
+                    title: 'Les navettes, quelle galère !',
+                    pdfPath: '2022/Les Navettes Quelle Galère 09_11_2022.pdf',
+                    previewPath: '2022/Les Navettes Quelle Galère 09_11_2022_page-0001.jpg'
+                },
+                {
+                    id: 110,
+                    title: 'Radar Travail et Environnement',
+                    pdfPath: '2022/Radar Travail et Environnement 09_11_2022.pdf',
+                    previewPath: '2022/Radar Travail et Environnement 09_11_2022_page-0001.jpg'
+                },
+                {
+                    id: 111,
+                    title: 'Le saviez-vous ?',
+                    pdfPath: '2022/Le saviez-vous 12_11_2022.pdf',
+                    previewPath: '2022/Le saviez-vous 12_11_2022_page-0001.jpg'
+                },
+                {
+                    id: 112,
+                    title: 'Les points sur les i',
+                    pdfPath: '2022/Points sur les i 12_11_2022.pdf',
+                    previewPath: '2022/Points sur les i 12_11_2022_page-0001.jpg'
+                },
+                {
+                    id: 113,
+                    title: 'Élections professionnelles : choisir son camp',
+                    pdfPath: '2022/Elections Pro - Choisir son camp.pdf',
+                    previewPath: '2022/Elections Pro - Choisir son camp_page-0001.jpg'
+                },
+                {
+                    id: 114,
+                    title: 'Enjeu salaires 2022',
+                    pdfPath: '2022/Enjeu Salaires2022.pdf',
+                    previewPath: '2022/Enjeu Salaires2022_page-0001.jpg'
+                },
+                {
+                    id: 115,
+                    title: 'Les sondages CGT',
+                    pdfPath: '2022/Tract Sondages.pdf',
+                    previewPath: '2022/Tract Sondages_page-0001.jpg'
+                },
+                {
+                    id: 116,
+                    title: 'Négociation Télétravail',
+                    pdfPath: '2022/Tract_NegoTELEW.pdf',
+                    previewPath: '2022/Tract_NegoTELEW_page-0001.jpg'
+                },
+                {
+                    id: 117,
+                    title: 'Bilan des accords signés par la CGT',
+                    pdfPath: '2022/Bilans des accords signés par la CGT.pdf',
+                    previewPath: '2022/Bilans des accords signés par la CGT_page-0001.jpg'
+                }
+            ],
+            '2023': [
+                {
+                    id: 1,
+                    title: 'Brèves de printemps',
+                    pdfPath: '2023/Tract brèves de printemps.pdf',
+                    previewPath: '2023/Tract brèves de printemps_page-0001.jpg'
+                },
+                {
+                    id: 2,
+                    title: 'Volontariat RCC : des motifs de vigilance',
+                    pdfPath: '2023/Tract Volontariat RCC.pdf',
+                    previewPath: '2023/Tract Volontariat RCC_page-0001.jpg'
+                },
+                {
+                    id: 3,
+                    title: 'Les Midpoints : des repères salariaux hors sol, des process pour nous enfumer, une direction qui ment',
+                    pdfPath: '2023/midpoints.pdf',
+                    previewPath: '2023/midpoints_page-0001.jpg'
+                },
+                {
+                    id: 4,
+                    title: 'La com infantilisante d\'une direction Nokia France en perdition',
+                    pdfPath: '2023/tract com nokia final.pdf',
+                    previewPath: '2023/tract com nokia final_page-0001.jpg'
+                },
+                {
+                    id: 5,
+                    title: 'La CGT dénonce l\'arrestation de ses militants dans le Nord',
+                    pdfPath: '2023/La CGT dénonce l\'arrestation de ses militants dans le Nord  _ CGT.pdf',
+                    previewPath: '2023/La CGT dénonce l\'arrestation de ses militants dans le Nord  _ CGT_page-0001.jpg'
+                },
+                {
+                    id: 6,
+                    title: 'Vent glacial depuis la Finlande !',
+                    pdfPath: '2023/cotcot-promocadre-rcc-amphemol-reorg-V3.pdf',
+                    previewPath: '2023/cotcot-promocadre-rcc-amphemol-reorg-V3_page-0001.jpg'
+                },
+                {
+                    id: 7,
+                    title: 'Et toi alors, t\'es coté combien ?',
+                    pdfPath: '2023/ncc cotation 3.pdf',
+                    previewPath: '2023/ncc cotation 3_page-0001.jpg'
+                },
+                {
+                    id: 8,
+                    title: 'Cotation et réorganisation sous le sapin — Mais pourquoi tant de (M)N !',
+                    pdfPath: '2023/tract-noel-2023-V3.pdf',
+                    previewPath: '2023/tract-noel-2023-V3_page-0001.jpg'
+                }
+            ],
+            '2024': [
+                {
+                    id: 9,
+                    title: 'Réorganisation MN — Des couleuvres ou des spaghettis ?',
+                    pdfPath: '2024/reorg-mn-V3.pdf',
+                    previewPath: '2024/reorg-mn-V3_page-0001.jpg'
+                },
+                {
+                    id: 10,
+                    title: 'NAO → RCC → REPEAT — L\'urgence de la radicalité',
+                    pdfPath: '2024/retour salaires 2024 v1.pdf',
+                    previewPath: '2024/retour salaires 2024 v1_page-0001.jpg'
+                },
+                {
+                    id: 11,
+                    title: 'Profession de foi CGT — Élections FCPAN 2024',
+                    pdfPath: '2024/Profession_de_Foi_CGT_elections_FCPAN_2024_VF_V3.pdf',
+                    previewPath: '2024/Profession_de_Foi_CGT_elections_FCPAN_2024_VF_V3_page-0001.jpg'
+                },
+                {
+                    id: 12,
+                    title: 'Ici Massy — Les salariés parlent aux salariés',
+                    pdfPath: '2024/tract-indus-v1.pdf',
+                    previewPath: '2024/tract-indus-v1_page-0001.jpg'
+                },
+                {
+                    id: 13,
+                    title: 'Bilan de la RCC 2024 — Nokia a encore montré son vrai visage',
+                    pdfPath: '2024/tract-bilan-rcc24 v4.pdf',
+                    previewPath: '2024/tract-bilan-rcc24 v4_page-0001.jpg'
+                },
+                {
+                    id: 14,
+                    title: 'Le mois de décembre sera rouge — et ce ne sera pas le rouge du père Noël',
+                    pdfPath: '2024/2024-12-04_Mobilisations_et_elections_TPE.pdf',
+                    previewPath: '2024/2024-12-04_Mobilisations_et_elections_TPE_page-0001.jpg'
+                },
+                {
+                    id: 15,
+                    title: 'Urgence Industrie France',
+                    pdfPath: '2024/Democratie Syndicalisation RCC Salaires v2.pdf',
+                    previewPath: '2024/Democratie Syndicalisation RCC Salaires v2_page-0001.jpg'
+                }
+            ],
+            '2025': [
+                {
+                    id: 17,
+                    title: 'En 2025, on s\'organise avec le syndicat CGT NPS !',
+                    pdfPath: '2025/CGT-NPS-Voeux-2025.pdf',
+                    previewPath: '2025/CGT-NPS-Voeux-2025_page-0001.jpg'
+                },
+                {
+                    id: 18,
+                    title: 'Calculateur de baisse de salaire 2025',
+                    pdfPath: '2025/Calculateur salaires 2025 v1.pdf',
+                    previewPath: '2025/Calculateur salaires 2025 v1_page-0001.jpg'
+                },
+                {
+                    id: 19,
+                    title: 'Avenant Télétravail : signer pour 40 centimes ?',
+                    pdfPath: '2025/tract-avenant-TL-v2.pdf',
+                    previewPath: '2025/tract-avenant-TL-v2_page-0001.jpg'
+                },
+                {
+                    id: 20,
+                    title: 'Prévention sauce Nokia : seulement quand c\'est obligatoire ?',
+                    pdfPath: '2025/tract-prevention-risques_V1.pdf',
+                    previewPath: '2025/tract-prevention-risques_V1_page-0001.jpg'
+                },
+                {
+                    id: 21,
+                    title: 'Salaires +0,68 % : les négos ça ne marche pas, il faut se mobiliser',
+                    pdfPath: '2025/tract-salaires-2025.pdf',
+                    previewPath: '2025/tract-salaires-2025_page-0001.jpg'
+                },
+                {
+                    id: 22,
+                    title: 'Radar Travail et Environnement : vos propositions !',
+                    pdfPath: '2025/2025_04_TRACT_radar_restitution_v2_3p.pdf',
+                    previewPath: '2025/2025_04_TRACT_radar_restitution_v2_3p_page-0001.jpg'
+                },
+                {
+                    id: 23,
+                    title: '5 juin 2025 — Retraites, salaires, emploi : même combat !',
+                    pdfPath: '2025/20250507_JourneeAction5Juin_Tract_.pdf',
+                    previewPath: '2025/20250507_JourneeAction5Juin_Tract__page-0001.jpg'
+                },
+                {
+                    id: 24,
+                    title: 'Appel intersyndical — Mobilisation pour la Palestine le 14 juin',
+                    pdfPath: '2025/Palestine appel_manif_14_juin_cfdt_cgt_unsa_solidaires_fsu.pdf',
+                    previewPath: '2025/Palestine appel_manif_14_juin_cfdt_cgt_unsa_solidaires_fsu_page-0001.jpg'
+                },
+                {
+                    id: 25,
+                    title: 'Affaire BRM Nokia : le récap !',
+                    pdfPath: '2025/tract AT.pdf',
+                    previewPath: '2025/tract AT_page-0001.jpg'
+                },
+                {
+                    id: 26,
+                    title: 'Tracts Gaza : Nokia menace la CGT',
+                    pdfPath: '2025/20251002_Tract_CGT_.pdf',
+                    previewPath: '2025/20251002_Tract_CGT__page-0001.jpg'
+                },
+                {
+                    id: 27,
+                    title: 'Un accident du travail n\'est pas un arrêt maladie',
+                    pdfPath: '2025/tract AT.pdf',
+                    previewPath: '2025/tract AT_page-0001.jpg'
+                },
+                {
+                    id: 28,
+                    title: 'Sois performant pour gagner',
+                    pdfPath: '2025/tract POUR CEUX QUI RESTENT.pdf',
+                    previewPath: '2025/tract POUR CEUX QUI RESTENT_page-0001.jpg'
+                },
+                {
+                    id: 29,
+                    title: 'Happy Thanksgiving chez Nokia — L\'industrie française dindon de la farce',
+                    pdfPath: '2025/tract contentieux bonus 16juin25.pdf',
+                    previewPath: '2025/tract contentieux bonus 16juin25_page-0001.jpg'
+                },
+                {
+                    id: 30,
+                    title: 'L\'emploi menacé en Grèce comme en France',
+                    pdfPath: '2025/Soutien_Grece_Nokia_Microwave_v1.pdf',
+                    previewPath: '2025/Soutien_Grece_Nokia_Microwave_v1_page-0001.jpg'
+                },
+                {
+                    id: 31,
+                    title: 'Pour ceux qui restent',
+                    pdfPath: '2025/tract POUR CEUX QUI RESTENT.pdf',
+                    previewPath: '2025/tract POUR CEUX QUI RESTENT_page-0001.jpg'
+                }
+            ],
+            '2026': [
+                {
+                    id: 32,
+                    title: 'Eval 2026 : le réveil brutal du "Perform to Win" — Chronique d\'un triage annoncé',
+                    pdfPath: '2026/Perform 2 Win le reveil brutal v2.pdf',
+                    previewPath: '2026/Perform 2 Win le reveil brutal v2_page-0001.jpg'
+                },
+                {
+                    id: 33,
+                    title: 'Pressions contre vos élus CGT : les Prud\'hommes rappellent le droit à deux reprises',
+                    pdfPath: '2026/repression syndicale v5.pdf',
+                    previewPath: '2026/repression syndicale v5_page-0001.jpg'
+                },
+                {
+                    id: 34,
+                    title: 'RCC 2026-2 : retour du sondage salariés',
+                    pdfPath: '2026/2026_06_TRACT-RetourSondageRCC2026-2.pdf',
+                    previewPath: '2026/2026_06_TRACT-RetourSondageRCC2026-2_page-0001.jpg'
+                },
+                {
+                    id: 35,
+                    title: 'La communauté WhatsApp des salariés dépasse les 1 000 membres',
+                    pdfPath: '2026/communauté whatsapp v2.pdf',
+                    previewPath: '2026/communauté whatsapp v2_page-0001.jpg'
+                }
+            ]
+        };
+
+        // Informations contextuelles (objet du courriel + date de diffusion + résumé)
+        const tractsInfo = {
+            1: { subject: 'Brèves de printemps', date: '21 avril 2023', summary: 'Représentativité syndicale après les élections de 2022, rejet de l\'accord NAO 2023, accord égalité professionnelle, nouvelle convention collective de la métallurgie, démantèlement de RFS France, réforme des retraites et pollution au III-V Lab.' },
+            2: { subject: 'Rentrée 2023 - RCC', date: '21 septembre 2023', summary: 'Conditions du volontariat dans le cadre de la RCC et points de vigilance pour les salariés concernés.' },
+            3: { subject: 'Rentrée 2023 - Midpoints', date: '27 septembre 2023', summary: 'Critique des repères salariaux « Midpoints », de leur manque de transparence et de leur usage dans les processus de rémunération.' },
+            4: { subject: 'Sur la Com. de Nokia ... A l\'occasion de la journée mondiale de l\'INTEGRITE ! + APPEL MANIF INTERSYNDICALE VENDREDI 13 !', date: '10 octobre 2023', summary: 'Critique de la communication interne de la direction française, avec relais de l\'appel intersyndical à la mobilisation du 13 octobre 2023.' },
+            5: { subject: 'La CGT dénonce l\'arrestation de ses militants dans le Nord', date: '20 octobre 2023', summary: 'Communication dénonçant l\'arrestation de militants de la CGT dans le Nord.' },
+            6: { subject: 'Automne 2023 : Vent glacial depuis la Finlande', date: '6 novembre 2023', summary: 'Annonces de la direction du groupe et leurs conséquences pour NCCN, la RCC et le Radar Travail et Environnement.' },
+            7: { subject: 'Et toi alors, t\'es coté combien ?', date: '13 novembre 2023 (relance le 23 novembre)', summary: 'Nouvelle convention collective, cotation des postes et conséquences sur la classification des emplois.' },
+            8: { subject: 'Mais Pourquoi tant de (M)N ?', date: '21 décembre 2023', summary: 'Cotation des emplois, passage cadre, RCC et réorganisation de MN.' },
+
+            9: { subject: 'MN : Des couleuvres ou des spaghettis', date: '23 janvier 2024', summary: 'Nouvelle organisation de MN concernant 520 salariés, transfert d\'activités vers la Pologne et site de Wroclaw.' },
+            10: { subject: 'L\'urgence de la radicalité', date: '15 mars 2024', summary: 'Augmentations salariales 2024 après les NAO et leur répartition entre les salariés.' },
+            11: { subject: 'Elections FCPAN : N\'oubliez pas de voter !', date: '4 avril 2024', summary: 'Profession de foi des candidats CGT pour les élections FCPAN 2024.' },
+            12: { subject: 'Les sanglots longs des violons de l\'automne', date: '10 juin 2024', summary: 'Augmentations 2024, RCC 2024, fonctionnement démocratique du syndicat et appel à rejoindre la CGT.' },
+            13: { subject: 'Bilan de la RCC 2024', date: '6 novembre 2024 (rectificatif le 7 novembre)', summary: 'Bilan de la RCC 2024 : 210 dossiers validés, disparités entre organisations, difficultés de substitution, pressions sur certains salariés, réorganisation de MN Europe.' },
+            14: { subject: 'Le mois de décembre sera rouge (et ce ne sera pas le rouge du père Noël)', date: '4 décembre 2024', summary: 'Mobilisations de décembre pour l\'emploi et l\'industrie, la fonction publique, les ports et la SNCF, et élections professionnelles dans les TPE.' },
+            15: { subject: 'Urgence Industrie France', date: '12 décembre 2024', summary: 'Désindustrialisation, suppressions d\'emplois, aides publiques aux entreprises et appel à la mobilisation nationale pour l\'emploi et l\'industrie.' },
+
+            17: { subject: 'En 2025, on s\'organise avec le syndicat CGT NPS !', date: '24 janvier 2025', summary: 'Vœux 2025 : bilan de la RCC 2024 et avis du CSE-E sur 231 postes supprimés, accords signés ou non en 2024, nouvelle équipe d\'élus, mise à jour des fiches emplois.' },
+            18: { subject: 'Calculateur de baisse de salaire 2025', date: '29 janvier 2025', summary: 'Outil de calcul de l\'évolution de son salaire corrigée de l\'inflation depuis 2015, en appui des revendications salariales.' },
+            19: { subject: 'Avenant Télétravail : signer pour 40 centimes ?', date: '19 février 2025', summary: 'Négociation de l\'avenant à l\'accord télétravail de 2022 : indemnité journalière portée à 4,40 €, maintien de l\'aide de 300 € sous conditions.' },
+            20: { subject: 'Prevention sauce Nokia', date: '18 mars 2025', summary: 'Santé et sécurité : démolition de la tour de Nozay, formation aux risques chimiques et électriques, locaux fissurés, sortie de secours condamnée à Massy, droit d\'alerte et CSSCT.' },
+            21: { subject: 'Salaires : Les négos ça ne marche pas', date: '26 mars 2025', summary: 'Refus de signer les NAO 2025 : enveloppe de 2 % soit 0,68 % après inflation, baisse de 4 % du pouvoir d\'achat depuis 2021, action de blocage des calendriers suivie par près de 600 salariés.' },
+            22: { subject: 'Radar travail et environnement : vos propositions !', date: '30 avril 2025', summary: 'Restitution du sondage Radar Travail et Environnement (182 répondants) : empreinte carbone, consommation énergétique, cycle de vie des produits, biodiversité et participation des salariés.' },
+            23: { subject: '5 juin journée d\'action pour les retraites, l\'emploi et les salaires', date: '4 juin 2025', summary: 'Appel à la grève et à la manifestation du 5 juin 2025 pour l\'abrogation de la réforme des retraites, les salaires, l\'emploi industriel et les services publics.' },
+            24: { subject: 'MOBILISATION POUR LA PALESTINE LE 14 JUIN', date: '12 juin 2025', summary: 'Relais de l\'appel intersyndical CFDT, CGT, Unsa, Solidaires et FSU à manifester le 14 juin 2025 pour un cessez-le-feu à Gaza et l\'accès de l\'aide humanitaire.' },
+            25: { subject: 'Affaire BRM Nokia : le récap !', date: '16 juin 2025', summary: 'Récapitulatif de l\'affaire BRM chez Nokia et de ses suites pour les salariés concernés.' },
+            26: { subject: 'Tracts Gaza : Nokia menace la CGT', date: '30 septembre 2025', summary: 'Tracts sur Gaza et menaces de la direction contre leur diffusion. Le même envoi comprenait l\'appel intersyndical à la grève du 2 octobre.' },
+            27: { subject: 'Un accident du travail n\'est pas un arrêt maladie', date: '9 octobre 2025', summary: 'Différence entre accident du travail et arrêt maladie, démarches de déclaration, y compris pour les situations d\'épuisement professionnel.' },
+            28: { subject: '« Perform to win »… sérieusement ?', date: '23 octobre 2025', summary: 'Critique du nouveau système d\'évaluation, de ses critères comportementaux, du risque de classement forcé et de ses conséquences sur la rémunération variable.' },
+            29: { subject: 'Thanksgiving Nokia : L\'industrie française dindon de la farce', date: '28 novembre 2025', summary: 'Projet de RCC visant 427 suppressions de postes, baisse continue des effectifs en France, risques d\'externalisation et orientations industrielles du groupe.' },
+            30: { subject: 'L\'emploi menacé en Grèce comme en France', date: '5 décembre 2025', summary: 'Soutien aux salariés grecs de Nokia Microwave : relais de l\'appel des syndicats grecs et solidarité avec leur grève du 10 décembre.' },
+            31: { subject: 'Pour ceux qui restent', date: '19 décembre 2025', summary: 'Refus de la CGT de signer l\'accord de RCC et conséquences pour les salariés qui restent dans l\'entreprise.' },
+
+            32: { subject: '« Developing » de tout le pays, unissez-vous !', date: '3 avril 2026', summary: 'Premières applications du dispositif « Perform to Win » : quotas de notation, contestation des évaluations et revendication d\'un treizième mois.' },
+            33: { subject: 'Répression syndicale : Nokia condamné aux CPHs', date: '16 juin 2026', summary: 'Deux décisions prud\'homales, exercice du droit d\'alerte, sanctions syndicales et restrictions contestées à la communication syndicale.' },
+            34: { subject: 'Votre ressenti pour la RCC 2026-2', date: '26 juin 2026', summary: 'Réponses de 312 salariés au sondage sur la deuxième RCC de 2026, leurs réactions et leurs priorités de négociation.' },
+            35: { subject: '1000+ membres sur le WhatsApp des salariés', date: '23 septembre 2026', summary: 'Groupes d\'entraide, RCC, BRM, anciens salariés et démarches en préfecture ; appel à rejoindre la CGT à l\'approche des élections du 23 novembre 2026.' }
+        };
+
+        // Render content
+        function renderContent() {
+            const content = document.getElementById('content');
+            const years = Object.keys(tractsData).sort((a, b) => b.localeCompare(a));
+
+            content.innerHTML = years.map(year => `
+                <section class="year-section">
+                    <div class="year-separator">
+                        <span class="year-separator-label">${year}</span>
+                    </div>
+                    <div class="grid">
+                        ${[...tractsData[year]].reverse().map(tract => createCard(tract)).join('')}
+                    </div>
+                </section>
+            `).join('');
+
+            years.forEach(year => tractsData[year].forEach(tract => loadPdfPreview(tract)));
+        }
+
+        function createCard(tract) {
+            const info = tractsInfo[tract.id];
+            const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            return `
+                <div class="card" title="${esc(tract.title)}">
+                    <div class="card-preview" id="container-${tract.id}">
+                        <div class="card-preview-placeholder loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${esc(info && info.subject ? info.subject : tract.title)}</h3>
+                        ${info && info.date ? `<p class="card-meta">${esc(info.date)}</p>` : ''}
+                        ${info && info.summary ? `<p class="card-summary">${esc(info.summary)}</p>` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <a href="${esc(tract.pdfPath)}" class="btn btn-primary" target="_blank">📥 Afficher PDF</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showPlaceholder(container, tract) {
+            container.innerHTML = `<div class="card-preview-placeholder"><p>📄 ${tract.title}</p></div>`;
+            if (tract.pdfPath) {
+                container.style.cursor = 'pointer';
+                container.onclick = () => window.open(tract.pdfPath, '_blank');
+            } else {
+                container.style.cursor = 'default';
+            }
+        }
+
+        function loadPdfPreview(tract) {
+            const container = document.getElementById(`container-${tract.id}`);
+            if (!container) return;
+
+            if (!tract.previewPath) {
+                showPlaceholder(container, tract);
+                return;
+            }
+
+            const img = document.createElement('img');
+            img.alt = tract.title;
+            img.onerror = () => showPlaceholder(container, tract);
+            img.onload = () => {
+                container.innerHTML = '';
+                container.appendChild(img);
+                if (tract.pdfPath) {
+                    container.style.cursor = 'pointer';
+                    container.onclick = () => window.open(tract.pdfPath, '_blank');
+                }
+            };
+            img.src = tract.previewPath;
+        }
+
+        // Initialize
+        renderContent();
+    </script>
+</body>
+</html>
