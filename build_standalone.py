@@ -12,13 +12,18 @@ import base64
 import html
 import os
 import re
+from urllib.parse import quote
 
 import pymupdf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BASE = os.path.dirname(HERE)
-SRC = os.path.join(BASE, "wall_of_tracts_sharepoint.html")
-DST = os.path.join(BASE, "wall_of_tracts_standalone.html")
+BASE = HERE
+SRC = os.path.join(BASE, "index.html")
+DST = os.path.join(BASE, "index_standalone.html")
+SHAREPOINT_BASE_URL = (
+    "https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/"
+    "salari%C3%A9s/tracts%20diffus%C3%A9s/"
+)
 
 TARGET_WIDTH = 520  # px
 JPEG_QUALITY = 65
@@ -59,6 +64,12 @@ def render_thumb(rel_path):
         return pix.tobytes("jpg", jpg_quality=JPEG_QUALITY)
 
 
+def sharepoint_file_url(rel_path):
+    """Construit une URL directe depuis un chemin relatif de l'index."""
+    encoded_path = "/".join(quote(part, safe="") for part in rel_path.split("/"))
+    return SHAREPOINT_BASE_URL + encoded_path
+
+
 def parse_tracts(source):
     """Retourne {annee: [tract, ...]} dans l'ordre chronologique croissant."""
     block = re.search(r"const tractsData = \{(.*?)\n        \};", source, re.S)
@@ -68,8 +79,8 @@ def parse_tracts(source):
     entry_re = re.compile(
         r"id:\s*(\d+),\s*"
         r"title:\s*'((?:[^'\\]|\\.)*)',\s*"
-        r"url:\s*'((?:[^'\\]|\\.)*)',\s*"
-        r"hasLink:\s*(true|false)"
+        r"pdfPath:\s*'((?:[^'\\]|\\.)*)',\s*"
+        r"previewPath:\s*'((?:[^'\\]|\\.)*)'"
     )
 
     years = {}
@@ -80,10 +91,12 @@ def parse_tracts(source):
             {
                 "id": int(tid),
                 "title": unescape_js(title),
-                "url": unescape_js(url),
-                "hasLink": has_link == "true",
+                "pdfPath": unescape_js(pdf_path),
+                "previewPath": unescape_js(preview_path),
+                "url": sharepoint_file_url(unescape_js(pdf_path)),
+                "hasLink": bool(pdf_path),
             }
-            for tid, title, url, has_link in entry_re.findall(body)
+            for tid, title, pdf_path, preview_path in entry_re.findall(body)
         ]
     return years
 
@@ -110,14 +123,11 @@ def parse_info(source):
 
 
 def parse_previews(source):
-    block = re.search(r"const previewsById = \{(.*?)\n        \};", source, re.S)
-    if not block:
-        raise SystemExit("Bloc previewsById introuvable")
     return {
-        int(tid): unescape_js(path)
-        for tid, path in re.findall(
-            r"(\d+):\s*'((?:[^'\\]|\\.)*)'", block.group(1)
-        )
+        tract["id"]: tract["previewPath"]
+        for year_tracts in source.values()
+        for tract in year_tracts
+        if tract["previewPath"]
     }
 
 
@@ -151,7 +161,7 @@ def build_card(tract, info, data_uri):
 
     if tract["hasLink"] and tract["url"]:
         return (
-            f'<a class="card" href="{e(tract["url"])}" target="_blank" '
+            f'<a class="card" href="{e(tract["url"])}" target="_self" '
             f'rel="noopener noreferrer" title="{e(title)}">{inner}</a>'
         )
     return f'<div class="card" title="{e(title)}">{inner}</div>'
@@ -163,7 +173,7 @@ def main():
 
     tracts = parse_tracts(source)
     infos = parse_info(source)
-    previews = parse_previews(source)
+    previews = parse_previews(tracts)
 
     data_uris = {}
     total = 0

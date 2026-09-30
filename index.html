@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracts CGT-NPS</title>    
+    <title>Mur des tracts CGT-NPS</title>    
     <style>
         :root {
             --bg: #0f1115;
@@ -643,6 +643,12 @@
             35: { subject: '1000+ membres sur le WhatsApp des salariés', date: '23 septembre 2026', summary: 'Groupes d\'entraide, RCC, BRM, anciens salariés et démarches en préfecture ; appel à rejoindre la CGT à l\'approche des élections du 23 novembre 2026.' }
         };
 
+        const TRACTS_BASE_URL = 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/';
+
+        function getTractUrl(path) {
+            return TRACTS_BASE_URL + path.split('/').map(encodeURIComponent).join('/');
+        }
+
         // Render content
         function renderContent() {
             const content = document.getElementById('content');
@@ -686,8 +692,7 @@
             if (tract.pdfPath) {
                 container.style.cursor = 'pointer';
                 container.onclick = () => {
-                    const url = new URL(tract.pdfPath, window.location.href).href;
-                    window.open(url, '_blank');
+                    window.location.href = getTractUrl(tract.pdfPath);
                 };
             } else {
                 container.style.cursor = 'default';
@@ -712,12 +717,11 @@
                 if (tract.pdfPath) {
                     container.style.cursor = 'pointer';
                     container.onclick = () => {
-                        const url = new URL(tract.pdfPath, window.location.href).href;
-                        window.open(url, '_blank');
+                        window.location.href = getTractUrl(tract.pdfPath);
                     };
                 }
             };
-            img.src = tract.previewPath;
+            img.src = getTractUrl(tract.previewPath);
         }
 
         // Initialize
