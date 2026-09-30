@@ -646,7 +646,10 @@
         const TRACTS_BASE_URL = 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/';
 
         function getTractUrl(path) {
-            return TRACTS_BASE_URL + path.split('/').map(encodeURIComponent).join('/');
+            const encodedPath = path.split('/').map(encodeURIComponent).join('/');
+            return window.location.protocol === 'file:'
+                ? encodedPath
+                : TRACTS_BASE_URL + encodedPath;
         }
 
         // Render content
