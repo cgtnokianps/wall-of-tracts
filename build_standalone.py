@@ -4,15 +4,15 @@ Les cartes sont pre-generees en HTML et tout le JavaScript est supprime : les
 liens fonctionnent donc partout, y compris la ou les scripts inline sont
 bloques (ouverture locale, piece jointe, iframe, composant Incorporer).
 
-Les apercus sont re-rendus en basse resolution et embarques en base64 : aucun
-dossier d'images n'est necessaire a cote du fichier.
+Les apercus sont re-rendus en basse resolution et embarques en base64. Le logo
+et le bandeau du titre sont aussi embarques. Aucun dossier d'images n'est
+necessaire a cote du fichier.
 """
 
 import base64
 import html
 import os
 import re
-from urllib.parse import quote
 
 import pymupdf
 
@@ -20,13 +20,17 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BASE = HERE
 SRC = os.path.join(BASE, "index.html")
 DST = os.path.join(BASE, "index_standalone.html")
-SHAREPOINT_BASE_URL = (
-    "https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/"
-    "salari%C3%A9s/tracts%20diffus%C3%A9s/"
-)
 
 TARGET_WIDTH = 520  # px
 JPEG_QUALITY = 65
+IMAGE_MIME = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+}
 
 EXTRA_CSS = """
         a.card {
@@ -46,13 +50,28 @@ def unescape_js(raw):
     return re.sub(r"\\(.)", r"\1", raw)
 
 
-def render_thumb(rel_path):
-    """Retourne les octets JPEG reduits pour un chemin d'apercu relatif."""
-    jpg_path = os.path.join(BASE, rel_path.replace("/", os.sep))
-    pdf_path = re.sub(r"_page-0001\.jpg$", ".pdf", jpg_path)
+def local_pdf_path(preview_path):
+    """Retrouve le PDF local a partir du chemin d'apercu."""
+    if not preview_path:
+        return ""
+    rel = preview_path.replace("/", os.sep)
+    if rel.startswith("previews" + os.sep):
+        rel = "copies" + rel[len("previews") :]
+    rel = re.sub(r"_page-0001\.jpe?g$", ".pdf", rel, flags=re.IGNORECASE)
+    return os.path.join(BASE, rel)
 
-    source = pdf_path if os.path.exists(pdf_path) else jpg_path
-    if not os.path.exists(source):
+
+def render_thumb(preview_path):
+    """Retourne les octets JPEG reduits, de preference depuis le PDF."""
+    pdf_path = local_pdf_path(preview_path)
+    jpg_path = (
+        os.path.join(BASE, preview_path.replace("/", os.sep)) if preview_path else ""
+    )
+    if pdf_path and os.path.exists(pdf_path):
+        source = pdf_path
+    elif jpg_path and os.path.exists(jpg_path):
+        source = jpg_path
+    else:
         return None
 
     with pymupdf.open(source) as doc:
@@ -64,12 +83,6 @@ def render_thumb(rel_path):
         return pix.tobytes("jpg", jpg_quality=JPEG_QUALITY)
 
 
-def sharepoint_file_url(rel_path):
-    """Construit une URL directe depuis un chemin relatif de l'index."""
-    encoded_path = "/".join(quote(part, safe="") for part in rel_path.split("/"))
-    return SHAREPOINT_BASE_URL + encoded_path
-
-
 def parse_tracts(source):
     """Retourne {annee: [tract, ...]} dans l'ordre chronologique croissant."""
     block = re.search(r"const tractsData = \{(.*?)\n        \};", source, re.S)
@@ -79,7 +92,7 @@ def parse_tracts(source):
     entry_re = re.compile(
         r"id:\s*(\d+),\s*"
         r"title:\s*'((?:[^'\\]|\\.)*)',\s*"
-        r"pdfPath:\s*'((?:[^'\\]|\\.)*)',\s*"
+        r"pdfUrl:\s*'((?:[^'\\]|\\.)*)',\s*"
         r"previewPath:\s*'((?:[^'\\]|\\.)*)'"
     )
 
@@ -91,9 +104,9 @@ def parse_tracts(source):
             {
                 "id": int(tid),
                 "title": unescape_js(title),
-                "pdfPath": unescape_js(pdf_path),
+                "pdfUrl": unescape_js(pdf_path),
                 "previewPath": unescape_js(preview_path),
-                "url": sharepoint_file_url(unescape_js(pdf_path)),
+                "url": unescape_js(pdf_path),
                 "hasLink": bool(pdf_path),
             }
             for tid, title, pdf_path, preview_path in entry_re.findall(body)
@@ -122,13 +135,34 @@ def parse_info(source):
     }
 
 
-def parse_previews(source):
-    return {
-        tract["id"]: tract["previewPath"]
-        for year_tracts in source.values()
-        for tract in year_tracts
-        if tract["previewPath"]
-    }
+def embed_local_images(page):
+    """Remplace les src locaux des balises img par des data URI base64."""
+    total = 0
+
+    def replace(match):
+        nonlocal total
+        src = match.group(1)
+        if src.startswith(("data:", "http://", "https://")):
+            return match.group(0)
+
+        path = os.path.join(BASE, src.replace("/", os.sep))
+        if not os.path.isfile(path):
+            print(f"  [!] image introuvable : {src}")
+            return match.group(0)
+
+        mime = IMAGE_MIME.get(os.path.splitext(path)[1].lower())
+        if not mime:
+            print(f"  [!] type d'image non pris en charge : {src}")
+            return match.group(0)
+
+        with open(path, "rb") as image:
+            data = image.read()
+        total += len(data)
+        uri = "data:" + mime + ";base64," + base64.b64encode(data).decode("ascii")
+        print(f"  image embarquee : {src} ({len(data) // 1024} Ko)")
+        return match.group(0).replace(src, uri, 1)
+
+    return re.sub(r'<img\b[^>]*\bsrc="([^"]+)"', replace, page), total
 
 
 def build_card(tract, info, data_uri):
@@ -173,19 +207,19 @@ def main():
 
     tracts = parse_tracts(source)
     infos = parse_info(source)
-    previews = parse_previews(tracts)
 
     data_uris = {}
     total = 0
-    for tract_id, rel_path in previews.items():
-        data = render_thumb(rel_path)
-        if data is None:
-            print(f"  [!] apercu introuvable : {rel_path}")
-            continue
-        total += len(data)
-        data_uris[tract_id] = "data:image/jpeg;base64," + base64.b64encode(
-            data
-        ).decode("ascii")
+    for year_tracts in tracts.values():
+        for tract in year_tracts:
+            data = render_thumb(tract["previewPath"])
+            if data is None:
+                print(f"  [!] apercu introuvable : {tract['previewPath']}")
+                continue
+            total += len(data)
+            data_uris[tract["id"]] = "data:image/jpeg;base64," + base64.b64encode(
+                data
+            ).decode("ascii")
 
     sections = []
     for year in sorted(tracts, reverse=True):
@@ -209,6 +243,7 @@ def main():
         '        <div id="content"></div>', "\n".join(sections).lstrip(), 1
     )
     out = re.sub(r"\n    <script>.*?</script>\n", "\n", out, flags=re.S)
+    out, static_total = embed_local_images(out)
 
     with open(DST, "w", encoding="utf-8") as f:
         f.write(out)
@@ -216,7 +251,7 @@ def main():
     count = sum(len(v) for v in tracts.values())
     print(
         f"\n{count} tracts, {len(data_uris)} apercus embarques "
-        f"({total // 1024} Ko d'images)"
+        f"({total // 1024} Ko d'apercus, {static_total // 1024} Ko d'images fixes)"
     )
     print(f"{os.path.basename(DST)} : {os.path.getsize(DST) // 1024} Ko")
 

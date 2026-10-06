@@ -41,11 +41,37 @@
             color: var(--text);
         }
 
+        .header-title {
+            position: relative;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90px;
+            height: auto;
+        }
+
         .header h1 {
             font-size: 2.5em;
             font-weight: 700;
             letter-spacing: -0.02em;
             margin-bottom: 10px;
+        }
+
+        .header-wordcloud {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin: 20px 0 0;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.45);
         }
 
         .header p {
@@ -83,7 +109,6 @@
             background: var(--surface);
             white-space: nowrap;
         }
-
         .year-title {
             color: var(--text);
             font-size: 1.8em;
@@ -253,6 +278,15 @@
                 grid-template-columns: 1fr;
             }
 
+            .header-title {
+                min-height: 80px;
+                padding-left: 70px;
+            }
+
+            .header-logo {
+                width: 65px;
+            }
+
             .header h1 {
                 font-size: 1.8em;
             }
@@ -275,7 +309,11 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Tracts CGT NPS</h1>
+            <div class="header-title">
+                <img class="header-logo" src="logo_ufict_2025_nokia.png" alt="Logo CGT Nokia">
+                <h1>Tracts CGT NPS</h1>
+            </div>
+            <img class="header-wordcloud" src="bandeau_nuage_CGT39_2022_2026_5x1_sans_logo.png" alt="Nuage de mots des thèmes des tracts CGT NPS">
         </div>
 
         <div id="content"></div>
@@ -287,328 +325,343 @@
                 {
                     id: 102,
                     title: 'Santé et Prévoyance — ce qui change en 2022',
-                    pdfPath: '2022/Tract_Santé_Prévoyance_Mars_2022 nps.pdf',
-                    previewPath: '2022/Tract_Santé_Prévoyance_Mars_2022 nps_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract_Sant%C3%A9_Pr%C3%A9voyance_Mars_2022%20nps.pdf',
+                    previewPath: 'previews/Tract_Santé_Prévoyance_Mars_2022 nps_page-0001.jpg'
                 },
                 {
                     id: 103,
                     title: 'Désaccords en cascade',
-                    pdfPath: '2022/Tract CGT desaccords en cascade 03-06-2022.pdf',
-                    previewPath: '2022/Tract CGT desaccords en cascade 03-06-2022_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract%20CGT%20desaccords%20en%20cascade%2003-06-2022.pdf',
+                    previewPath: 'previews/Tract CGT desaccords en cascade 03-06-2022_page-0001.jpg'
                 },
                 {
                     id: 104,
                     title: 'Brèves d\'été',
-                    pdfPath: '2022/Tract brèves d\'été.pdf',
-                    previewPath: '2022/Tract brèves d\'été_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract%20br%C3%A8ves%20d%27%C3%A9t%C3%A9.pdf',
+                    previewPath: 'previews/Tract brèves d\'été_page-0001.jpg'
                 },
                 {
                     id: 105,
                     title: 'Déménagement : la CGT vous informe',
-                    pdfPath: '2022/Tract demenagement 06-09-22.pdf',
-                    previewPath: '2022/Tract demenagement 06-09-22_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract%20demenagement%2006-09-22.pdf',
+                    previewPath: 'previews/Tract demenagement 06-09-22_page-0001.jpg'
                 },
                 {
                     id: 106,
                     title: 'Manif du 29 septembre — Candidatures aux élections',
-                    pdfPath: '2022/Manif29septembre CandidaturesElection.pdf',
-                    previewPath: '2022/Manif29septembre CandidaturesElection_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Manif29septembre%20CandidaturesElection.pdf',
+                    previewPath: 'previews/Manif29septembre CandidaturesElection_page-0001.jpg'
                 },
                 {
                     id: 107,
                     title: 'Ce que veulent les cadres — Baromètre UGICT / Viavoice',
-                    pdfPath: '2022/Ce que veulent les Cadres -Synthèse Baromètre Cadres UGICT Viavoice octobre 2022.pdf',
-                    previewPath: '2022/Ce que veulent les Cadres -Synthèse Baromètre Cadres UGICT Viavoice octobre 2022_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Ce%20que%20veulent%20les%20Cadres%20-Synth%C3%A8se%20Barom%C3%A8tre%20Cadres%20UGICT%20Viavoice%20octobre%202022.pdf',
+                    previewPath: 'previews/Ce que veulent les Cadres -Synthèse Baromètre Cadres UGICT Viavoice octobre 2022_page-0001.jpg'
                 },
                 {
                     id: 108,
                     title: 'Retour du sondage CGT sur les navettes',
-                    pdfPath: '2022/Retour Sondage CGT Navettes Octobre 2022.pdf',
-                    previewPath: '2022/Retour Sondage CGT Navettes Octobre 2022_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Retour%20Sondage%20CGT%20Navettes%20Octobre%202022.pdf',
+                    previewPath: 'previews/Retour Sondage CGT Navettes Octobre 2022_page-0001.jpg'
                 },
                 {
                     id: 109,
                     title: 'Les navettes, quelle galère !',
-                    pdfPath: '2022/Les Navettes Quelle Galère 09_11_2022.pdf',
-                    previewPath: '2022/Les Navettes Quelle Galère 09_11_2022_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Les%20Navettes%20Quelle%20Gal%C3%A8re%2009_11_2022.pdf',
+                    previewPath: 'previews/Les Navettes Quelle Galère 09_11_2022_page-0001.jpg'
                 },
                 {
                     id: 110,
                     title: 'Radar Travail et Environnement',
-                    pdfPath: '2022/Radar Travail et Environnement 09_11_2022.pdf',
-                    previewPath: '2022/Radar Travail et Environnement 09_11_2022_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Radar%20Travail%20et%20Environnement%2009_11_2022.pdf',
+                    previewPath: 'previews/Radar Travail et Environnement 09_11_2022_page-0001.jpg'
                 },
                 {
                     id: 111,
                     title: 'Le saviez-vous ?',
-                    pdfPath: '2022/Le saviez-vous 12_11_2022.pdf',
-                    previewPath: '2022/Le saviez-vous 12_11_2022_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Le%20saviez-vous%2012_11_2022.pdf',
+                    previewPath: 'previews/Le saviez-vous 12_11_2022_page-0001.jpg'
                 },
                 {
                     id: 112,
                     title: 'Les points sur les i',
-                    pdfPath: '2022/Points sur les i 12_11_2022.pdf',
-                    previewPath: '2022/Points sur les i 12_11_2022_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Points%20sur%20les%20i%2012_11_2022.pdf',
+                    previewPath: 'previews/Points sur les i 12_11_2022_page-0001.jpg'
                 },
                 {
                     id: 113,
                     title: 'Élections professionnelles : choisir son camp',
-                    pdfPath: '2022/Elections Pro - Choisir son camp.pdf',
-                    previewPath: '2022/Elections Pro - Choisir son camp_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Elections%20Pro%20-%20Choisir%20son%20camp.pdf',
+                    previewPath: 'previews/Elections Pro - Choisir son camp_page-0001.jpg'
                 },
                 {
                     id: 114,
                     title: 'Enjeu salaires 2022',
-                    pdfPath: '2022/Enjeu Salaires2022.pdf',
-                    previewPath: '2022/Enjeu Salaires2022_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Enjeu%20Salaires2022.pdf',
+                    previewPath: 'previews/Enjeu Salaires2022_page-0001.jpg'
                 },
                 {
                     id: 115,
                     title: 'Les sondages CGT',
-                    pdfPath: '2022/Tract Sondages.pdf',
-                    previewPath: '2022/Tract Sondages_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract%20Sondages.pdf',
+                    previewPath: 'previews/Tract Sondages_page-0001.jpg'
                 },
                 {
                     id: 116,
                     title: 'Négociation Télétravail',
-                    pdfPath: '2022/Tract_NegoTELEW.pdf',
-                    previewPath: '2022/Tract_NegoTELEW_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract_NegoTELEW.pdf',
+                    previewPath: 'previews/Tract_NegoTELEW_page-0001.jpg'
                 },
                 {
                     id: 117,
                     title: 'Bilan des accords signés par la CGT',
-                    pdfPath: '2022/Bilans des accords signés par la CGT.pdf',
-                    previewPath: '2022/Bilans des accords signés par la CGT_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Bilans%20des%20accords%20sign%C3%A9s%20par%20la%20CGT.pdf',
+                    previewPath: 'previews/Bilans des accords signés par la CGT_page-0001.jpg'
                 }
             ],
             '2023': [
                 {
                     id: 1,
                     title: 'Brèves de printemps',
-                    pdfPath: '2023/Tract brèves de printemps.pdf',
-                    previewPath: '2023/Tract brèves de printemps_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract%20br%C3%A8ves%20de%20printemps.pdf',
+                    previewPath: 'previews/Tract brèves de printemps_page-0001.jpg'
                 },
                 {
                     id: 2,
                     title: 'Volontariat RCC : des motifs de vigilance',
-                    pdfPath: '2023/Tract Volontariat RCC.pdf',
-                    previewPath: '2023/Tract Volontariat RCC_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract%20Volontariat%20RCC.pdf',
+                    previewPath: 'previews/Tract Volontariat RCC_page-0001.jpg'
                 },
                 {
                     id: 3,
                     title: 'Les Midpoints : des repères salariaux hors sol, des process pour nous enfumer, une direction qui ment',
-                    pdfPath: '2023/midpoints.pdf',
-                    previewPath: '2023/midpoints_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/midpoints.pdf',
+                    previewPath: 'previews/midpoints_page-0001.jpg'
                 },
                 {
                     id: 4,
                     title: 'La com infantilisante d\'une direction Nokia France en perdition',
-                    pdfPath: '2023/tract com nokia final.pdf',
-                    previewPath: '2023/tract com nokia final_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract%20com%20nokia%20final.pdf',
+                    previewPath: 'previews/tract com nokia final_page-0001.jpg'
                 },
                 {
                     id: 5,
                     title: 'La CGT dénonce l\'arrestation de ses militants dans le Nord',
-                    pdfPath: '2023/tract_militants_nord.pdf',
-                    previewPath: '2023/tract_militants_nord.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_militants_nord.pdf',
+                    previewPath: 'previews/tract_militants_nord_page-0001.jpg'
                 },
                 {
                     id: 6,
                     title: 'Vent glacial depuis la Finlande !',
-                    pdfPath: '2023/tract_annonces_pekka_06_11_2023.pdf',
-                    previewPath: '2023/tract_annonces_pekka_06_11_2023_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_annonces_pekka_06_11_2023.pdf',
+                    previewPath: 'previews/tract_annonces_pekka_06_11_2023_page-0001.jpg'
                 },
                 {
                     id: 7,
                     title: 'Et toi alors, t\'es coté combien ?',
-                    pdfPath: '2023/ncc cotation 3.pdf',
-                    previewPath: '2023/ncc cotation 3_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/ncc%20cotation%203.pdf',
+                    previewPath: 'previews/ncc cotation 3_page-0001.jpg'
                 },
                 {
                     id: 8,
                     title: 'Cotation et réorganisation sous le sapin — Mais pourquoi tant de (M)N !',
-                    pdfPath: '2023/tract-noel-2023-V3.pdf',
-                    previewPath: '2023/tract-noel-2023-V3_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract-noel-2023-V3.pdf',
+                    previewPath: 'previews/tract-noel-2023-V3_page-0001.jpg'
                 }
             ],
             '2024': [
                 {
                     id: 9,
                     title: 'Réorganisation MN — Des couleuvres ou des spaghettis ?',
-                    pdfPath: '2024/reorg-mn-V3.pdf',
-                    previewPath: '2024/reorg-mn-V3_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/reorg-mn-V3.pdf',
+                    previewPath: 'previews/reorg-mn-V3_page-0001.jpg'
                 },
                 {
                     id: 10,
                     title: 'NAO → RCC → REPEAT — L\'urgence de la radicalité',
-                    pdfPath: '2024/tract_retour_salaires_2024_v1.pdf',
-                    previewPath: '2024/tract_retour_salaires_2024_v1_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_retour_salaires_2024_v1.pdf',
+                    previewPath: 'previews/tract_retour_salaires_2024_v1_page-0001.jpg'
                 },
                 {
                     id: 11,
                     title: 'Profession de foi CGT — Élections FCPAN 2024',
-                    pdfPath: '2024/Profession_de_Foi_CGT_elections_FCPAN_2024_VF_V3.pdf',
-                    previewPath: '2024/Profession_de_Foi_CGT_elections_FCPAN_2024_VF_V3_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Profession_de_Foi_CGT_elections_FCPAN_2024_VF_V3.pdf',
+                    previewPath: 'previews/Profession_de_Foi_CGT_elections_FCPAN_2024_VF_V3_page-0001.jpg'
                 },
                 {
                     id: 12,
                     title: 'Ici Massy — Les salariés parlent aux salariés',
-                    pdfPath: '2024/tract_democratie_rcc_salaires_v2.pdf',
-                    previewPath: '2024/tract_democratie_rcc_salaires_v2_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_democratie_rcc_salaires_v2.pdf',
+                    previewPath: 'previews/tract_democratie_rcc_salaires_v2_page-0001.jpg'
                 },
                 {
                     id: 13,
                     title: 'Bilan de la RCC 2024 — Nokia a encore montré son vrai visage',
-                    pdfPath: '2024/tract_bilan_rcc24_v4.pdf',
-                    previewPath: '2024/tract_bilan_rcc24_v4_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_bilan_rcc24_v4.pdf',
+                    previewPath: 'previews/tract_bilan_rcc24_v4_page-0001.jpg'
                 },
                 {
                     id: 14,
                     title: 'Le mois de décembre sera rouge — et ce ne sera pas le rouge du père Noël',
-                    pdfPath: '2024/2024-12-04_Mobilisations_et_elections_TPE.pdf',
-                    previewPath: '2024/2024-12-04_Mobilisations_et_elections_TPE_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/2024-12-04_Mobilisations_et_elections_TPE.pdf',
+                    previewPath: 'previews/2024-12-04_Mobilisations_et_elections_TPE_page-0001.jpg'
                 },
                 {
                     id: 15,
                     title: 'Urgence Industrie France',
-                    pdfPath: '2024/tract-indus-v1.pdf',
-                    previewPath: '2024/tract-indus-v1_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract-indus-v1.pdf',
+                    previewPath: 'previews/tract-indus-v1_page-0001.jpg'
                 }
             ],
             '2025': [
                 {
                     id: 17,
                     title: 'En 2025, on s\'organise avec le syndicat CGT NPS !',
-                    pdfPath: '2025/CGT-NPS-Voeux-2025.pdf',
-                    previewPath: '2025/CGT-NPS-Voeux-2025_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/CGT-NPS-Voeux-2025.pdf',
+                    previewPath: 'previews/CGT-NPS-Voeux-2025_page-0001.jpg'
                 },
                 {
                     id: 18,
                     title: 'Calculateur de baisse de salaire 2025',
-                    pdfPath: '2025/tract_calculateur_salaires_2025.pdf',
-                    previewPath: '2025/tract_calculateur_salaires_2025_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_calculateur_salaires_2025.pdf',
+                    previewPath: 'previews/tract_calculateur_salaires_2025_page-0001.jpg'
                 },
                 {
                     id: 19,
                     title: 'Avenant Télétravail : signer pour 40 centimes ?',
-                    pdfPath: '2025/tract-avenant-TL-v2.pdf',
-                    previewPath: '2025/tract-avenant-TL-v2_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract-avenant-TL-v2.pdf',
+                    previewPath: 'previews/tract-avenant-TL-v2_page-0001.jpg'
                 },
                 {
                     id: 20,
                     title: 'Prévention sauce Nokia : seulement quand c\'est obligatoire ?',
-                    pdfPath: '2025/tract-prevention-risques_V1.pdf',
-                    previewPath: '2025/tract-prevention-risques_V1_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract-prevention-risques_V1.pdf',
+                    previewPath: 'previews/tract-prevention-risques_V1_page-0001.jpg'
                 },
                 {
                     id: 21,
                     title: 'Salaires +0,68 % : les négos ça ne marche pas, il faut se mobiliser',
-                    pdfPath: '2025/tract-salaires-2025.pdf',
-                    previewPath: '2025/tract-salaires-2025_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract-salaires-2025.pdf',
+                    previewPath: 'previews/tract-salaires-2025_page-0001.jpg'
                 },
                 {
                     id: 22,
                     title: 'Radar Travail et Environnement : vos propositions !',
-                    pdfPath: '2025/2025_04_TRACT_radar_restitution_v2_3p.pdf',
-                    previewPath: '2025/2025_04_TRACT_radar_restitution_v2_3p_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/2025_04_TRACT_radar_restitution_v2_3p.pdf',
+                    previewPath: 'previews/2025_04_TRACT_radar_restitution_v2_3p_page-0001.jpg'
                 },
                 {
                     id: 23,
                     title: '5 juin 2025 — Retraites, salaires, emploi : même combat !',
-                    pdfPath: '2025/20250507_JourneeAction5Juin_Tract_.pdf',
-                    previewPath: '2025/20250507_JourneeAction5Juin_Tract__page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/20250507_JourneeAction5Juin_Tract_.pdf',
+                    previewPath: 'previews/20250507_JourneeAction5Juin_Tract__page-0001.jpg'
                 },
                 {
                     id: 24,
                     title: 'Appel intersyndical — Mobilisation pour la Palestine le 14 juin',
-                    pdfPath: '2025/tract_palestine_appel_manif.pdf',
-                    previewPath: '2025/tract_palestine_appel_manif_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_palestine_appel_manif.pdf',
+                    previewPath: 'previews/tract_palestine_appel_manif_page-0001.jpg'
                 },
                 {
                     id: 25,
                     title: 'Affaire BRM Nokia : le récap !',
-                    pdfPath: '2025/tract contentieux bonus 16juin25.pdf',
-                    previewPath: '2025/tract contentieux bonus 16juin25_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract%20contentieux%20bonus%2016juin25.pdf',
+                    previewPath: 'previews/tract contentieux bonus 16juin25_page-0001.jpg'
                 },
                 {
                     id: 16,
                     title: 'Mobilisation 10 septembre — Déclaration du CCN (26-27 août)',
-                    pdfPath: '2025/20250827_Mobilisation_10_Septembre_CCN.pdf',
-                    previewPath: '2025/20250827_Mobilisation_10_Septembre_CCN_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/20250827_Mobilisation_10_Septembre_CCN.pdf',
+                    previewPath: 'previews/20250827_Mobilisation_10_Septembre_CCN_page-0001.jpg'
                 },
                 {
                     id: 26,
                     title: 'Tracts Gaza : Nokia menace la CGT',
-                    pdfPath: '2025/reponse gaza 2025 v4.pdf',
-                    previewPath: '2025/reponse gaza 2025 v4_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/reponse%20gaza%202025%20v4.pdf',
+                    previewPath: 'previews/reponse gaza 2025 v4_page-0001.jpg'
                 },
                 {
                     id: 27,
                     title: 'Un accident du travail n\'est pas un arrêt maladie',
-                    pdfPath: '2025/tract AT.pdf',
-                    previewPath: '2025/tract AT_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract%20AT.pdf',
+                    previewPath: 'previews/tract AT_page-0001.jpg'
                 },
                 {
                     id: 28,
                     title: 'Sois performant pour gagner',
-                    pdfPath: '2025/tract evaluation objectifs v2--3p.pdf',
-                    previewPath: '2025/tract evaluation objectifs v2 - 3p_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract%20evaluation%20objectifs%20v2--3p.pdf',
+                    previewPath: 'previews/tract evaluation objectifs v2--3p_page-0001.jpg'
                 },
                 {
                     id: 29,
                     title: 'Happy Thanksgiving chez Nokia — L\'industrie française dindon de la farce',
-                    pdfPath: '2025/tract_rcc_2026.pdf',
-                    previewPath: '2025/tract_rcc_2026_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_rcc_2026.pdf',
+                    previewPath: 'previews/tract_rcc_2026_page-0001.jpg'
                 },
                 {
                     id: 30,
                     title: 'L\'emploi menacé en Grèce comme en France',
-                    pdfPath: '2025/Soutien_Grece_Nokia_Microwave_v1.pdf',
-                    previewPath: '2025/Soutien_Grece_Nokia_Microwave_v1_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Soutien_Grece_Nokia_Microwave_v1.pdf',
+                    previewPath: 'previews/Soutien_Grece_Nokia_Microwave_v1_page-0001.jpg'
                 },
                 {
                     id: 31,
                     title: 'Pour ceux qui restent',
-                    pdfPath: '2025/tract_pour_ceux_qui_restent.pdf',
-                    previewPath: '2025/tract_pour_ceux_qui_restent_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_pour_ceux_qui_restent.pdf',
+                    previewPath: 'previews/tract_pour_ceux_qui_restent_page-0001.jpg'
                 }
             ],
             '2026': [
                 {
                     id: 32,
                     title: 'Eval 2026 : le réveil brutal du "Perform to Win" — Chronique d\'un triage annoncé',
-                    pdfPath: '2026/tract_perform_to_win.pdf',
-                    previewPath: '2026/tract_perform_to_win_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/tract_perform_to_win.pdf',
+                    previewPath: 'previews/tract_perform_to_win_page-0001.jpg'
                 },
                 {
                     id: 33,
                     title: 'Pressions contre vos élus CGT : les Prud\'hommes rappellent le droit à deux reprises',
-                    pdfPath: '2026/repression syndicale v5.pdf',
-                    previewPath: '2026/repression syndicale v5_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/repression%20syndicale%20v5.pdf',
+                    previewPath: 'previews/repression syndicale v5_page-0001.jpg'
                 },
                 {
                     id: 34,
                     title: 'RCC 2026-2 : retour du sondage salariés',
-                    pdfPath: '2026/2026_06_TRACT-RetourSondageRCC2026-2.pdf',
-                    previewPath: '2026/2026_06_TRACT-RetourSondageRCC2026-2_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/2026_06_TRACT-RetourSondageRCC2026-2.pdf',
+                    previewPath: 'previews/2026_06_TRACT-RetourSondageRCC2026-2_page-0001.jpg'
                 },
                 {
                     id: 35,
                     title: 'La communauté WhatsApp des salariés dépasse les 1 000 membres',
-                    pdfPath: '2026/communauté whatsapp v2.pdf',
-                    previewPath: '2026/communauté whatsapp v2_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/communaut%C3%A9%20whatsapp%20v2.pdf',
+                    previewPath: 'previews/communauté whatsapp v2_page-0001.jpg'
                 },
                 {
                     id: 36,
                     title: 'Retraites : nos années d’études doivent compter !',
-                    pdfPath: '2026/Tract-retraites-2026-v-allegee.pdf',
-                    previewPath: '2026/Tract-retraites-2026-v-allegee_page-0001.jpg'
+                    pdfUrl: 'https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/copies/Tract-retraites-2026-v-allegee.pdf',
+                    previewPath: 'previews/Tract-retraites-2026-v-allegee_page-0001.jpg'
                 }
             ]
         };
 
         // Informations contextuelles (objet du courriel + date de diffusion + résumé)
         const tractsInfo = {
+            102: { subject: '', date: '7 mars 2022', summary: '' },
+            103: { subject: '', date: '3 juin 2022', summary: '' },
+            104: { subject: '', date: '16 septembre 2022', summary: '' },
+            105: { subject: '', date: '5 septembre 2022', summary: '' },
+            106: { subject: '', date: '27 septembre 2022', summary: '' },
+            108: { subject: '', date: '24 octobre 2022', summary: '' },
+            109: { subject: '', date: '9 novembre 2022', summary: '' },
+            110: { subject: '', date: '9 novembre 2022', summary: '' },
+            111: { subject: '', date: '12 novembre 2022', summary: '' },
+            112: { subject: '', date: '12 novembre 2022', summary: '' },
+            113: { subject: '', date: '10 novembre 2022', summary: '' },
+            114: { subject: '', date: '26 octobre 2022', summary: '' },
+            115: { subject: '', date: '19 septembre 2022', summary: '' },
+            116: { subject: '', date: '26 avril 2022', summary: '' },
+
             16: { subject: 'Mobilisation 10 septembre — Construisons un processus de lutte', date: '27 août 2025', summary: 'Déclaration du CCN des 26-27 août 2025. La CGT exige l\'abandon du projet de budget et appelle à la mobilisation du 10 septembre pour les droits sociaux et environnementaux.' },
             1: { subject: 'Brèves de printemps', date: '21 avril 2023', summary: 'Représentativité syndicale après les élections de 2022, rejet de l\'accord NAO 2023, accord égalité professionnelle, nouvelle convention collective de la métallurgie, démantèlement de RFS France, réforme des retraites et pollution au III-V Lab.' },
             2: { subject: 'Rentrée 2023 - RCC', date: '21 septembre 2023', summary: 'Conditions du volontariat dans le cadre de la RCC et points de vigilance pour les salariés concernés.' },
@@ -616,14 +669,14 @@
             4: { subject: 'Sur la Com. de Nokia ... A l\'occasion de la journée mondiale de l\'INTEGRITE ! + APPEL MANIF INTERSYNDICALE VENDREDI 13 !', date: '10 octobre 2023', summary: 'Critique de la communication interne de la direction française, avec relais de l\'appel intersyndical à la mobilisation du 13 octobre 2023.' },
             5: { subject: 'La CGT dénonce l\'arrestation de ses militants dans le Nord', date: '20 octobre 2023', summary: 'Communication dénonçant l\'arrestation de militants de la CGT dans le Nord.' },
             6: { subject: 'Automne 2023 : Vent glacial depuis la Finlande', date: '6 novembre 2023', summary: 'Annonces de la direction du groupe et leurs conséquences pour NCCN, la RCC et le Radar Travail et Environnement.' },
-            7: { subject: 'Et toi alors, t\'es coté combien ?', date: '13 novembre 2023 (relance le 23 novembre)', summary: 'Nouvelle convention collective, cotation des postes et conséquences sur la classification des emplois.' },
+            7: { subject: 'Et toi alors, t\'es coté combien ?', date: '13 novembre 2023', summary: 'Nouvelle convention collective, cotation des postes et conséquences sur la classification des emplois.' },
             8: { subject: 'Mais Pourquoi tant de (M)N ?', date: '21 décembre 2023', summary: 'Cotation des emplois, passage cadre, RCC et réorganisation de MN.' },
 
             9: { subject: 'MN : Des couleuvres ou des spaghettis', date: '23 janvier 2024', summary: 'Nouvelle organisation de MN concernant 520 salariés, transfert d\'activités vers la Pologne et site de Wroclaw.' },
             10: { subject: 'L\'urgence de la radicalité', date: '15 mars 2024', summary: 'Augmentations salariales 2024 après les NAO et leur répartition entre les salariés.' },
             11: { subject: 'Elections FCPAN : N\'oubliez pas de voter !', date: '4 avril 2024', summary: 'Profession de foi des candidats CGT pour les élections FCPAN 2024.' },
             12: { subject: 'Les sanglots longs des violons de l\'automne', date: '10 juin 2024', summary: 'Augmentations 2024, RCC 2024, fonctionnement démocratique du syndicat et appel à rejoindre la CGT.' },
-            13: { subject: 'Bilan de la RCC 2024', date: '6 novembre 2024 (rectificatif le 7 novembre)', summary: 'Bilan de la RCC 2024 : 210 dossiers validés, disparités entre organisations, difficultés de substitution, pressions sur certains salariés, réorganisation de MN Europe.' },
+            13: { subject: 'Bilan de la RCC 2024', date: '6 novembre 2024', summary: 'Bilan de la RCC 2024 : 210 dossiers validés, disparités entre organisations, difficultés de substitution, pressions sur certains salariés, réorganisation de MN Europe.' },
             14: { subject: 'Le mois de décembre sera rouge (et ce ne sera pas le rouge du père Noël)', date: '4 décembre 2024', summary: 'Mobilisations de décembre pour l\'emploi et l\'industrie, la fonction publique, les ports et la SNCF, et élections professionnelles dans les TPE.' },
             15: { subject: 'Urgence Industrie France', date: '12 décembre 2024', summary: 'Désindustrialisation, suppressions d\'emplois, aides publiques aux entreprises et appel à la mobilisation nationale pour l\'emploi et l\'industrie.' },
 
@@ -668,8 +721,7 @@
                 <section class="year-section">
                     <div class="year-separator">
                         <span class="year-separator-label">${year}</span>
-                    </div>
-                    <div class="grid">
+                    </div>                    <div class="grid">
                         ${[...tractsData[year]].reverse().map(tract => createCard(tract)).join('')}
                     </div>
                 </section>
@@ -699,10 +751,10 @@
 
         function showPlaceholder(container, tract) {
             container.innerHTML = `<div class="card-preview-placeholder"><p>📄 ${tract.title}</p></div>`;
-            if (tract.pdfPath) {
+            if (tract.pdfUrl) {
                 container.style.cursor = 'pointer';
                 container.onclick = () => {
-                    window.location.href = getTractUrl(tract.pdfPath);
+                    window.location.href = tract.pdfUrl;
                 };
             } else {
                 container.style.cursor = 'default';
@@ -724,10 +776,10 @@
             img.onload = () => {
                 container.innerHTML = '';
                 container.appendChild(img);
-                if (tract.pdfPath) {
+                if (tract.pdfUrl) {
                     container.style.cursor = 'pointer';
                     container.onclick = () => {
-                        window.location.href = getTractUrl(tract.pdfPath);
+                        window.location.href = tract.pdfUrl;
                     };
                 }
             };
