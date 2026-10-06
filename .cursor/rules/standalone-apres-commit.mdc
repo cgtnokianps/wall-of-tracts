@@ -1,0 +1,16 @@
+---
+description: Generer index_standalone.html au moment du commit, pas pendant les etapes intermediaires
+alwaysApply: true
+---
+
+# Page autonome
+
+`index.html` est la page de test. Ne pas lancer `python build_standalone.py` pendant les modifications intermediaires.
+
+Generer `index_standalone.html` au moment d'un commit qui touche la page, les tracts, les apercus, le bandeau, le logo ou `build_standalone.py`. Lancer la generation avant `git commit` et inclure le fichier dans ce commit :
+
+```powershell
+python build_standalone.py
+```
+
+Exceptions : lancer la generation tout de suite si l'utilisateur le demande, ou si le changement ne peut pas etre verifie dans `index.html`.
