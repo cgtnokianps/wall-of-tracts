@@ -92,6 +92,9 @@ def parse_tracts(source):
     entry_re = re.compile(
         r"id:\s*(\d+),\s*"
         r"title:\s*'((?:[^'\\]|\\.)*)',\s*"
+        r"subject:\s*'((?:[^'\\]|\\.)*)',\s*"
+        r"date:\s*'((?:[^'\\]|\\.)*)',\s*"
+        r"summary:\s*'((?:[^'\\]|\\.)*)',\s*"
         r"pdfUrl:\s*'((?:[^'\\]|\\.)*)',\s*"
         r"previewPath:\s*'((?:[^'\\]|\\.)*)'"
     )
@@ -104,35 +107,19 @@ def parse_tracts(source):
             {
                 "id": int(tid),
                 "title": unescape_js(title),
+                "subject": unescape_js(subject),
+                "date": unescape_js(date),
+                "summary": unescape_js(summary),
                 "pdfUrl": unescape_js(pdf_path),
                 "previewPath": unescape_js(preview_path),
                 "url": unescape_js(pdf_path),
                 "hasLink": bool(pdf_path),
             }
-            for tid, title, pdf_path, preview_path in entry_re.findall(body)
+            for tid, title, subject, date, summary, pdf_path, preview_path in entry_re.findall(
+                body
+            )
         ]
     return years
-
-
-def parse_info(source):
-    block = re.search(r"const tractsInfo = \{(.*?)\n        \};", source, re.S)
-    if not block:
-        return {}
-
-    entry_re = re.compile(
-        r"(\d+):\s*\{\s*"
-        r"subject:\s*'((?:[^'\\]|\\.)*)',\s*"
-        r"date:\s*'((?:[^'\\]|\\.)*)',\s*"
-        r"summary:\s*'((?:[^'\\]|\\.)*)'\s*\}"
-    )
-    return {
-        int(tid): {
-            "subject": unescape_js(subject),
-            "date": unescape_js(date),
-            "summary": unescape_js(summary),
-        }
-        for tid, subject, date, summary in entry_re.findall(block.group(1))
-    }
 
 
 def embed_local_images(page):
@@ -165,7 +152,7 @@ def embed_local_images(page):
     return re.sub(r'<img\b[^>]*\bsrc="([^"]+)"', replace, page), total
 
 
-def build_card(tract, info, data_uri):
+def build_card(tract, data_uri):
     e = html.escape
     title = tract["title"]
 
@@ -176,9 +163,9 @@ def build_card(tract, info, data_uri):
             f'<div class="card-preview-placeholder"><p>&#128196; {e(title)}</p></div>'
         )
 
-    heading = info.get("subject") if info and info.get("subject") else title
-    meta = info.get("date", "") if info else ""
-    summary = info.get("summary", "") if info else ""
+    heading = tract.get("subject") or title
+    meta = tract.get("date") or ""
+    summary = tract.get("summary") or ""
 
     content = [f'<h3 class="card-title">{e(heading)}</h3>']
     if meta:
@@ -206,7 +193,6 @@ def main():
         source = f.read()
 
     tracts = parse_tracts(source)
-    infos = parse_info(source)
 
     data_uris = {}
     total = 0
@@ -224,7 +210,7 @@ def main():
     sections = []
     for year in sorted(tracts, reverse=True):
         cards = "\n                ".join(
-            build_card(t, infos.get(t["id"]), data_uris.get(t["id"]))
+            build_card(t, data_uris.get(t["id"]))
             for t in reversed(tracts[year])
         )
         sections.append(

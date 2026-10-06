@@ -1,9 +1,11 @@
 ---
-description: Generer index_standalone.html au moment du commit, pas pendant les etapes intermediaires
+description: Avant un commit, mettre a jour METHODE_SYNC_EXCEL.md si besoin, puis generer la page autonome
 alwaysApply: true
 ---
 
-# Page autonome
+# Avant un commit
+
+`METHODE_SYNC_EXCEL.md` est la memoire du projet (structure Excel, chemins, procedure). Si le travail a change un usage, une colonne, un fichier ou une procedure, mettre ce `.md` a jour **avant** `git commit`. Ne pas le modifier s'il n'y a rien de nouveau.
 
 `index.html` est la page de test. Ne pas lancer `python build_standalone.py` pendant les modifications intermediaires.
 
