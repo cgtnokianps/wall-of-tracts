@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mur des tracts CGT-NPS</title>
+    <style>
+        :root {
+            --bg: #0f1115;
+            --surface: #1a1d24;
+            --surface-2: #22262f;
+            --border: #2e333d;
+            --text: #e8eaed;
+            --text-muted: #9aa0aa;
+            --accent: #e63946;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI Variable Text', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Roboto, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--text);
+        }
+
+        .header-title {
+            position: relative;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90px;
+            height: auto;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+
+        .header-wordcloud {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin: 20px 0 0;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: var(--text-muted);
+        }
+
+        .year-section {
+            margin-bottom: 50px;
+        }
+
+        .year-separator {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .year-separator::before,
+        .year-separator::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .year-separator-label {
+            font-size: 1.35em;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            color: var(--text);
+            padding: 6px 22px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--surface);
+            white-space: nowrap;
+        }
+        .year-title {
+            color: var(--text);
+            font-size: 1.8em;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+        }
+
+        .card-preview {
+            width: 100%;
+            height: 350px;
+            background: var(--surface-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        a.card {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card-preview canvas,
+        .card-preview img {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .card-preview-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9em;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .card-preview-placeholder.loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card-content {
+            padding: 18px 20px 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+        }
+
+        .card-meta {
+            font-size: 0.72em;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .card-summary {
+            font-size: 0.82em;
+            line-height: 1.55;
+            color: var(--text-muted);
+        }
+
+        .card-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        .btn-disabled {
+            background: var(--surface-2);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .btn-disabled:hover {
+            transform: none;
+        }
+
+        .btn-label {
+            display: inline-block;
+            font-size: 0.75em;
+            background: var(--surface-2);
+            color: var(--text-muted);
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-title {
+                min-height: 80px;
+                padding-left: 70px;
+            }
+
+            .header-logo {
+                width: 65px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .card-preview {
+                height: 250px;
+            }
+        }
+    </style>
+
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_dlc_DocId msdt:dt="string">AUIRPTAIMRO3-1066683228-25235</mso:_dlc_DocId>
+<mso:_dlc_DocIdItemGuid msdt:dt="string">4a212cf1-f10a-4445-84ec-1e0e532064b4</mso:_dlc_DocIdItemGuid>
+<mso:_dlc_DocIdUrl msdt:dt="string">https://nokia.sharepoint.com/sites/CGT39/_layouts/15/DocIdRedir.aspx?ID=AUIRPTAIMRO3-1066683228-25235, AUIRPTAIMRO3-1066683228-25235</mso:_dlc_DocIdUrl>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <img class="header-logo" src="images/logo_ufict_2025_nokia.png" alt="Logo CGT Nokia">
+                <h1>Tracts CGT NPS</h1>
+            </div>
+            <img class="header-wordcloud" src="images/bandeau_nuage_CGT39_2022_2026_5x1_sans_logo.png" alt="Nuage de mots des thèmes des tracts CGT NPS">
+        </div>
+
+        <div id="content">
+        <section class="year-section">
+            <div class="year-separator">
+                <span class="year-separator-label">2026</span>
+            </div>
+            <div class="grid">
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract-retraites-2026-v-allegee.pdf" target="_self" rel="noopener noreferrer" title="Retraites : nos années d’études doivent compter !">
+                    <div class="card-preview"><img src="previews/Tract-retraites-2026-v-allegee_page-0001.jpg" alt="Retraites : nos années d’études doivent compter !"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Retraites : nos années d&#x27;études doivent compter</h3>
+                        <p class="card-meta">30 septembre 2026</p>
+                        <p class="card-summary">Tract Ugict-CGT : face à la relance du débat sur un recul de l&#x27;âge légal à 67 ans après la réforme de 2023, revendication de la prise en compte des années d&#x27;études dans le calcul de la retraite, illustrée par le cas de « Martine qui court après sa retraite ».</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/communaut%C3%A9%20whatsapp%20v2.pdf" target="_self" rel="noopener noreferrer" title="La communauté WhatsApp des salariés dépasse les 1 000 membres">
+                    <div class="card-preview"><img src="previews/communauté whatsapp v2_page-0001.jpg" alt="La communauté WhatsApp des salariés dépasse les 1 000 membres"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">1000+ membres sur le WhatsApp des salariés</h3>
+                        <p class="card-meta">23 septembre 2026</p>
+                        <p class="card-summary">Groupes d&#x27;entraide, RCC, BRM, anciens salariés et démarches en préfecture ; appel à rejoindre la CGT à l&#x27;approche des élections du 23 novembre 2026.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/2026_06_TRACT-RetourSondageRCC2026-2.pdf" target="_self" rel="noopener noreferrer" title="RCC 2026-2 : retour du sondage salariés">
+                    <div class="card-preview"><img src="previews/2026_06_TRACT-RetourSondageRCC2026-2_page-0001.jpg" alt="RCC 2026-2 : retour du sondage salariés"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Votre ressenti pour la RCC 2026-2</h3>
+                        <p class="card-meta">26 juin 2026</p>
+                        <p class="card-summary">Réponses de 312 salariés au sondage sur la deuxième RCC de 2026, leurs réactions et leurs priorités de négociation.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/repression%20syndicale%20v5.pdf" target="_self" rel="noopener noreferrer" title="Pressions contre vos élus CGT : les Prud&#x27;hommes rappellent le droit à deux reprises">
+                    <div class="card-preview"><img src="previews/repression syndicale v5_page-0001.jpg" alt="Pressions contre vos élus CGT : les Prud&#x27;hommes rappellent le droit à deux reprises"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Répression syndicale : Nokia condamné aux CPHs</h3>
+                        <p class="card-meta">16 juin 2026</p>
+                        <p class="card-summary">Deux décisions prud&#x27;homales, exercice du droit d&#x27;alerte, sanctions syndicales et restrictions contestées à la communication syndicale.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_perform_to_win.pdf" target="_self" rel="noopener noreferrer" title="Eval 2026 : le réveil brutal du &quot;Perform to Win&quot; — Chronique d&#x27;un triage annoncé">
+                    <div class="card-preview"><img src="previews/tract_perform_to_win_page-0001.jpg" alt="Eval 2026 : le réveil brutal du &quot;Perform to Win&quot; — Chronique d&#x27;un triage annoncé"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">« Developing » de tout le pays, unissez-vous !</h3>
+                        <p class="card-meta">3 avril 2026</p>
+                        <p class="card-summary">Premières applications du dispositif « Perform to Win » : quotas de notation, contestation des évaluations et revendication d&#x27;un treizième mois.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+        <section class="year-section">
+            <div class="year-separator">
+                <span class="year-separator-label">2025</span>
+            </div>
+            <div class="grid">
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_pour_ceux_qui_restent.pdf" target="_self" rel="noopener noreferrer" title="Pour ceux qui restent">
+                    <div class="card-preview"><img src="previews/tract_pour_ceux_qui_restent_page-0001.jpg" alt="Pour ceux qui restent"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Pour ceux qui restent</h3>
+                        <p class="card-meta">19 décembre 2025</p>
+                        <p class="card-summary">Refus de la CGT de signer l&#x27;accord de RCC et conséquences pour les salariés qui restent dans l&#x27;entreprise.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Soutien_Grece_Nokia_Microwave_v1.pdf" target="_self" rel="noopener noreferrer" title="L&#x27;emploi menacé en Grèce comme en France">
+                    <div class="card-preview"><img src="previews/Soutien_Grece_Nokia_Microwave_v1_page-0001.jpg" alt="L&#x27;emploi menacé en Grèce comme en France"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">L&#x27;emploi menacé en Grèce comme en France</h3>
+                        <p class="card-meta">5 décembre 2025</p>
+                        <p class="card-summary">Soutien aux salariés grecs de Nokia Microwave : relais de l&#x27;appel des syndicats grecs et solidarité avec leur grève du 10 décembre.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_rcc_2026.pdf" target="_self" rel="noopener noreferrer" title="Happy Thanksgiving chez Nokia — L&#x27;industrie française dindon de la farce">
+                    <div class="card-preview"><img src="previews/tract_rcc_2026_page-0001.jpg" alt="Happy Thanksgiving chez Nokia — L&#x27;industrie française dindon de la farce"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Thanksgiving Nokia : L&#x27;industrie française dindon de la farce</h3>
+                        <p class="card-meta">28 novembre 2025</p>
+                        <p class="card-summary">Projet de RCC visant 427 suppressions de postes, baisse continue des effectifs en France, risques d&#x27;externalisation et orientations industrielles du groupe.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract%20evaluation%20objectifs%20v2--3p.pdf" target="_self" rel="noopener noreferrer" title="Sois performant pour gagner">
+                    <div class="card-preview"><img src="previews/tract evaluation objectifs v2--3p_page-0001.jpg" alt="Sois performant pour gagner"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">« Perform to win »… sérieusement ?</h3>
+                        <p class="card-meta">23 octobre 2025</p>
+                        <p class="card-summary">Critique du nouveau système d&#x27;évaluation, de ses critères comportementaux, du risque de classement forcé et de ses conséquences sur la rémunération variable.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract%20AT.pdf" target="_self" rel="noopener noreferrer" title="Un accident du travail n&#x27;est pas un arrêt maladie">
+                    <div class="card-preview"><img src="previews/tract AT_page-0001.jpg" alt="Un accident du travail n&#x27;est pas un arrêt maladie"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Un accident du travail n&#x27;est pas un arrêt maladie</h3>
+                        <p class="card-meta">9 octobre 2025</p>
+                        <p class="card-summary">Différence entre accident du travail et arrêt maladie, démarches de déclaration, y compris pour les situations d&#x27;épuisement professionnel.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/reponse%20gaza%202025%20v4.pdf" target="_self" rel="noopener noreferrer" title="Tracts Gaza : Nokia menace la CGT">
+                    <div class="card-preview"><img src="previews/reponse gaza 2025 v4_page-0001.jpg" alt="Tracts Gaza : Nokia menace la CGT"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Tracts Gaza : Nokia menace la CGT</h3>
+                        <p class="card-meta">30 septembre 2025</p>
+                        <p class="card-summary">Tracts sur Gaza et menaces de la direction contre leur diffusion. Le même envoi comprenait l&#x27;appel intersyndical à la grève du 2 octobre.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/20250827_Mobilisation_10_Septembre_CCN.pdf" target="_self" rel="noopener noreferrer" title="Mobilisation 10 septembre — Déclaration du CCN (26-27 août)">
+                    <div class="card-preview"><img src="previews/20250827_Mobilisation_10_Septembre_CCN_page-0001.jpg" alt="Mobilisation 10 septembre — Déclaration du CCN (26-27 août)"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Mobilisation 10 septembre — Construisons un processus de lutte</h3>
+                        <p class="card-meta">27 août 2025</p>
+                        <p class="card-summary">Déclaration du CCN des 26-27 août 2025. La CGT exige l&#x27;abandon du projet de budget et appelle à la mobilisation du 10 septembre pour les droits sociaux et environnementaux.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract%20contentieux%20bonus%2016juin25.pdf" target="_self" rel="noopener noreferrer" title="Affaire BRM Nokia : le récap !">
+                    <div class="card-preview"><img src="previews/tract contentieux bonus 16juin25_page-0001.jpg" alt="Affaire BRM Nokia : le récap !"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Affaire BRM Nokia : le récap !</h3>
+                        <p class="card-meta">16 juin 2025</p>
+                        <p class="card-summary">Récapitulatif de l&#x27;affaire BRM chez Nokia et de ses suites pour les salariés concernés.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_palestine_appel_manif.pdf" target="_self" rel="noopener noreferrer" title="Appel intersyndical — Mobilisation pour la Palestine le 14 juin">
+                    <div class="card-preview"><img src="previews/tract_palestine_appel_manif_page-0001.jpg" alt="Appel intersyndical — Mobilisation pour la Palestine le 14 juin"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">MOBILISATION POUR LA PALESTINE LE 14 JUIN</h3>
+                        <p class="card-meta">12 juin 2025</p>
+                        <p class="card-summary">Relais de l&#x27;appel intersyndical CFDT, CGT, Unsa, Solidaires et FSU à manifester le 14 juin 2025 pour un cessez-le-feu à Gaza et l&#x27;accès de l&#x27;aide humanitaire.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/20250507_JourneeAction5Juin_Tract_.pdf" target="_self" rel="noopener noreferrer" title="5 juin 2025 — Retraites, salaires, emploi : même combat !">
+                    <div class="card-preview"><img src="previews/20250507_JourneeAction5Juin_Tract__page-0001.jpg" alt="5 juin 2025 — Retraites, salaires, emploi : même combat !"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">5 juin journée d&#x27;action pour les retraites, l&#x27;emploi et les salaires</h3>
+                        <p class="card-meta">4 juin 2025</p>
+                        <p class="card-summary">Appel à la grève et à la manifestation du 5 juin 2025 pour l&#x27;abrogation de la réforme des retraites, les salaires, l&#x27;emploi industriel et les services publics.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/2025_04_TRACT_radar_restitution_v2_3p.pdf" target="_self" rel="noopener noreferrer" title="Radar Travail et Environnement : vos propositions !">
+                    <div class="card-preview"><img src="previews/2025_04_TRACT_radar_restitution_v2_3p_page-0001.jpg" alt="Radar Travail et Environnement : vos propositions !"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Radar travail et environnement : vos propositions !</h3>
+                        <p class="card-meta">30 avril 2025</p>
+                        <p class="card-summary">Restitution du sondage Radar Travail et Environnement (182 répondants) : empreinte carbone, consommation énergétique, cycle de vie des produits, biodiversité et participation des salariés.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract-salaires-2025.pdf" target="_self" rel="noopener noreferrer" title="Salaires +0,68 % : les négos ça ne marche pas, il faut se mobiliser">
+                    <div class="card-preview"><img src="previews/tract-salaires-2025_page-0001.jpg" alt="Salaires +0,68 % : les négos ça ne marche pas, il faut se mobiliser"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Salaires : Les négos ça ne marche pas</h3>
+                        <p class="card-meta">26 mars 2025</p>
+                        <p class="card-summary">Refus de signer les NAO 2025 : enveloppe de 2 % soit 0,68 % après inflation, baisse de 4 % du pouvoir d&#x27;achat depuis 2021, action de blocage des calendriers suivie par près de 600 salariés.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract-prevention-risques_V1.pdf" target="_self" rel="noopener noreferrer" title="Prévention sauce Nokia : seulement quand c&#x27;est obligatoire ?">
+                    <div class="card-preview"><img src="previews/tract-prevention-risques_V1_page-0001.jpg" alt="Prévention sauce Nokia : seulement quand c&#x27;est obligatoire ?"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Prevention sauce Nokia</h3>
+                        <p class="card-meta">18 mars 2025</p>
+                        <p class="card-summary">Santé et sécurité : démolition de la tour de Nozay, formation aux risques chimiques et électriques, locaux fissurés, sortie de secours condamnée à Massy, droit d&#x27;alerte et CSSCT.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract-avenant-TL-v2.pdf" target="_self" rel="noopener noreferrer" title="Avenant Télétravail : signer pour 40 centimes ?">
+                    <div class="card-preview"><img src="previews/tract-avenant-TL-v2_page-0001.jpg" alt="Avenant Télétravail : signer pour 40 centimes ?"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Avenant Télétravail : signer pour 40 centimes ?</h3>
+                        <p class="card-meta">19 février 2025</p>
+                        <p class="card-summary">Négociation de l&#x27;avenant à l&#x27;accord télétravail de 2022 : indemnité journalière portée à 4,40 €, maintien de l&#x27;aide de 300 € sous conditions.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_calculateur_salaires_2025.pdf" target="_self" rel="noopener noreferrer" title="Calculateur de baisse de salaire 2025">
+                    <div class="card-preview"><img src="previews/tract_calculateur_salaires_2025_page-0001.jpg" alt="Calculateur de baisse de salaire 2025"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Calculateur de baisse de salaire 2025</h3>
+                        <p class="card-meta">29 janvier 2025</p>
+                        <p class="card-summary">Outil de calcul de l&#x27;évolution de son salaire corrigée de l&#x27;inflation depuis 2015, en appui des revendications salariales.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/CGT-NPS-Voeux-2025.pdf" target="_self" rel="noopener noreferrer" title="En 2025, on s&#x27;organise avec le syndicat CGT NPS !">
+                    <div class="card-preview"><img src="previews/CGT-NPS-Voeux-2025_page-0001.jpg" alt="En 2025, on s&#x27;organise avec le syndicat CGT NPS !"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">En 2025, on s&#x27;organise avec le syndicat CGT NPS !</h3>
+                        <p class="card-meta">24 janvier 2025</p>
+                        <p class="card-summary">Vœux 2025 : bilan de la RCC 2024 et avis du CSE-E sur 231 postes supprimés, accords signés ou non en 2024, nouvelle équipe d&#x27;élus, mise à jour des fiches emplois.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+        <section class="year-section">
+            <div class="year-separator">
+                <span class="year-separator-label">2024</span>
+            </div>
+            <div class="grid">
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract-indus-v1.pdf" target="_self" rel="noopener noreferrer" title="Urgence Industrie France">
+                    <div class="card-preview"><img src="previews/tract-indus-v1_page-0001.jpg" alt="Urgence Industrie France"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Urgence Industrie France</h3>
+                        <p class="card-meta">12 décembre 2024</p>
+                        <p class="card-summary">Désindustrialisation, suppressions d&#x27;emplois, aides publiques aux entreprises et appel à la mobilisation nationale pour l&#x27;emploi et l&#x27;industrie.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/2024-12-04_Mobilisations_et_elections_TPE.pdf" target="_self" rel="noopener noreferrer" title="Le mois de décembre sera rouge — et ce ne sera pas le rouge du père Noël">
+                    <div class="card-preview"><img src="previews/2024-12-04_Mobilisations_et_elections_TPE_page-0001.jpg" alt="Le mois de décembre sera rouge — et ce ne sera pas le rouge du père Noël"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Le mois de décembre sera rouge (et ce ne sera pas le rouge du père Noël)</h3>
+                        <p class="card-meta">4 décembre 2024</p>
+                        <p class="card-summary">Mobilisations de décembre pour l&#x27;emploi et l&#x27;industrie, la fonction publique, les ports et la SNCF, et élections professionnelles dans les TPE.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_bilan_rcc24_v4.pdf" target="_self" rel="noopener noreferrer" title="Bilan de la RCC 2024 — Nokia a encore montré son vrai visage">
+                    <div class="card-preview"><img src="previews/tract_bilan_rcc24_v4_page-0001.jpg" alt="Bilan de la RCC 2024 — Nokia a encore montré son vrai visage"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Bilan de la RCC 2024</h3>
+                        <p class="card-meta">6 novembre 2024</p>
+                        <p class="card-summary">Bilan de la RCC 2024 : 210 dossiers validés, disparités entre organisations, difficultés de substitution, pressions sur certains salariés, réorganisation de MN Europe.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_democratie_rcc_salaires_v2.pdf" target="_self" rel="noopener noreferrer" title="Ici Massy — Les salariés parlent aux salariés">
+                    <div class="card-preview"><img src="previews/tract_democratie_rcc_salaires_v2_page-0001.jpg" alt="Ici Massy — Les salariés parlent aux salariés"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Les sanglots longs des violons de l&#x27;automne</h3>
+                        <p class="card-meta">10 juin 2024</p>
+                        <p class="card-summary">Augmentations 2024, RCC 2024, fonctionnement démocratique du syndicat et appel à rejoindre la CGT.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Profession_de_Foi_CGT_elections_FCPAN_2024_VF_V3.pdf" target="_self" rel="noopener noreferrer" title="Profession de foi CGT — Élections FCPAN 2024">
+                    <div class="card-preview"><img src="previews/Profession_de_Foi_CGT_elections_FCPAN_2024_VF_V3_page-0001.jpg" alt="Profession de foi CGT — Élections FCPAN 2024"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Elections FCPAN : N&#x27;oubliez pas de voter !</h3>
+                        <p class="card-meta">4 avril 2024</p>
+                        <p class="card-summary">Profession de foi des candidats CGT pour les élections FCPAN 2024.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_retour_salaires_2024_v1.pdf" target="_self" rel="noopener noreferrer" title="NAO → RCC → REPEAT — L&#x27;urgence de la radicalité">
+                    <div class="card-preview"><img src="previews/tract_retour_salaires_2024_v1_page-0001.jpg" alt="NAO → RCC → REPEAT — L&#x27;urgence de la radicalité"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">L&#x27;urgence de la radicalité</h3>
+                        <p class="card-meta">15 mars 2024</p>
+                        <p class="card-summary">Augmentations salariales 2024 après les NAO et leur répartition entre les salariés.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/reorg-mn-V3.pdf" target="_self" rel="noopener noreferrer" title="Réorganisation MN — Des couleuvres ou des spaghettis ?">
+                    <div class="card-preview"><img src="previews/reorg-mn-V3_page-0001.jpg" alt="Réorganisation MN — Des couleuvres ou des spaghettis ?"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">MN : Des couleuvres ou des spaghettis</h3>
+                        <p class="card-meta">23 janvier 2024</p>
+                        <p class="card-summary">Nouvelle organisation de MN concernant 520 salariés, transfert d&#x27;activités vers la Pologne et site de Wroclaw.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+        <section class="year-section">
+            <div class="year-separator">
+                <span class="year-separator-label">2023</span>
+            </div>
+            <div class="grid">
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract-noel-2023-V3.pdf" target="_self" rel="noopener noreferrer" title="Cotation et réorganisation sous le sapin — Mais pourquoi tant de (M)N !">
+                    <div class="card-preview"><img src="previews/tract-noel-2023-V3_page-0001.jpg" alt="Cotation et réorganisation sous le sapin — Mais pourquoi tant de (M)N !"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Mais Pourquoi tant de (M)N ?</h3>
+                        <p class="card-meta">21 décembre 2023</p>
+                        <p class="card-summary">Cotation des emplois, passage cadre, RCC et réorganisation de MN.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/ncc%20cotation%203.pdf" target="_self" rel="noopener noreferrer" title="Et toi alors, t&#x27;es coté combien ?">
+                    <div class="card-preview"><img src="previews/ncc cotation 3_page-0001.jpg" alt="Et toi alors, t&#x27;es coté combien ?"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Et toi alors, t&#x27;es coté combien ?</h3>
+                        <p class="card-meta">13 novembre 2023</p>
+                        <p class="card-summary">Nouvelle convention collective, cotation des postes et conséquences sur la classification des emplois.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_annonces_pekka_06_11_2023.pdf" target="_self" rel="noopener noreferrer" title="Vent glacial depuis la Finlande !">
+                    <div class="card-preview"><img src="previews/tract_annonces_pekka_06_11_2023_page-0001.jpg" alt="Vent glacial depuis la Finlande !"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Automne 2023 : Vent glacial depuis la Finlande</h3>
+                        <p class="card-meta">6 novembre 2023</p>
+                        <p class="card-summary">Annonces de la direction du groupe et leurs conséquences pour NCCN, la RCC et le Radar Travail et Environnement.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract_militants_nord.pdf" target="_self" rel="noopener noreferrer" title="La CGT dénonce l&#x27;arrestation de ses militants dans le Nord">
+                    <div class="card-preview"><img src="previews/tract_militants_nord_page-0001.jpg" alt="La CGT dénonce l&#x27;arrestation de ses militants dans le Nord"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">La CGT dénonce l&#x27;arrestation de ses militants dans le Nord</h3>
+                        <p class="card-meta">20 octobre 2023</p>
+                        <p class="card-summary">Communication dénonçant l&#x27;arrestation de militants de la CGT dans le Nord.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/tract%20com%20nokia%20final.pdf" target="_self" rel="noopener noreferrer" title="La com infantilisante d&#x27;une direction Nokia France en perdition">
+                    <div class="card-preview"><img src="previews/tract com nokia final_page-0001.jpg" alt="La com infantilisante d&#x27;une direction Nokia France en perdition"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Sur la Com. de Nokia ... A l&#x27;occasion de la journée mondiale de l&#x27;INTEGRITE ! + APPEL MANIF INTERSYNDICALE VENDREDI 13 !</h3>
+                        <p class="card-meta">10 octobre 2023</p>
+                        <p class="card-summary">Critique de la communication interne de la direction française, avec relais de l&#x27;appel intersyndical à la mobilisation du 13 octobre 2023.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/midpoints.pdf" target="_self" rel="noopener noreferrer" title="Les Midpoints : des repères salariaux hors sol, des process pour nous enfumer, une direction qui ment">
+                    <div class="card-preview"><img src="previews/midpoints_page-0001.jpg" alt="Les Midpoints : des repères salariaux hors sol, des process pour nous enfumer, une direction qui ment"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Rentrée 2023 - Midpoints</h3>
+                        <p class="card-meta">27 septembre 2023</p>
+                        <p class="card-summary">Critique des repères salariaux « Midpoints », de leur manque de transparence et de leur usage dans les processus de rémunération.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract%20Volontariat%20RCC.pdf" target="_self" rel="noopener noreferrer" title="Volontariat RCC : des motifs de vigilance">
+                    <div class="card-preview"><img src="previews/Tract Volontariat RCC_page-0001.jpg" alt="Volontariat RCC : des motifs de vigilance"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Rentrée 2023 - RCC</h3>
+                        <p class="card-meta">21 septembre 2023</p>
+                        <p class="card-summary">Conditions du volontariat dans le cadre de la RCC et points de vigilance pour les salariés concernés.</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract%20br%C3%A8ves%20de%20printemps.pdf" target="_self" rel="noopener noreferrer" title="Brèves de printemps">
+                    <div class="card-preview"><img src="previews/Tract brèves de printemps_page-0001.jpg" alt="Brèves de printemps"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Brèves de printemps</h3>
+                        <p class="card-meta">21 avril 2023</p>
+                        <p class="card-summary">Représentativité syndicale après les élections de 2022, rejet de l&#x27;accord NAO 2023, accord égalité professionnelle, nouvelle convention collective de la métallurgie, démantèlement de RFS France, réforme des retraites et pollution au III-V Lab.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+        <section class="year-section">
+            <div class="year-separator">
+                <span class="year-separator-label">2022</span>
+            </div>
+            <div class="grid">
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Bilans%20des%20accords%20sign%C3%A9s%20par%20la%20CGT.pdf" target="_self" rel="noopener noreferrer" title="Bilan des accords signés par la CGT">
+                    <div class="card-preview"><img src="previews/Bilans des accords signés par la CGT_page-0001.jpg" alt="Bilan des accords signés par la CGT"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Bilan des accords signés par la CGT</h3>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract_NegoTELEW.pdf" target="_self" rel="noopener noreferrer" title="Négociation Télétravail">
+                    <div class="card-preview"><img src="previews/Tract_NegoTELEW_page-0001.jpg" alt="Négociation Télétravail"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Négociation Télétravail</h3>
+                        <p class="card-meta">26 avril 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract%20Sondages.pdf" target="_self" rel="noopener noreferrer" title="Les sondages CGT">
+                    <div class="card-preview"><img src="previews/Tract Sondages_page-0001.jpg" alt="Les sondages CGT"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Les sondages CGT</h3>
+                        <p class="card-meta">19 septembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Enjeu%20Salaires2022.pdf" target="_self" rel="noopener noreferrer" title="Enjeu salaires 2022">
+                    <div class="card-preview"><img src="previews/Enjeu Salaires2022_page-0001.jpg" alt="Enjeu salaires 2022"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Enjeu salaires 2022</h3>
+                        <p class="card-meta">26 octobre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Elections%20Pro%20-%20Choisir%20son%20camp.pdf" target="_self" rel="noopener noreferrer" title="Élections professionnelles : choisir son camp">
+                    <div class="card-preview"><img src="previews/Elections Pro - Choisir son camp_page-0001.jpg" alt="Élections professionnelles : choisir son camp"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Élections professionnelles : choisir son camp</h3>
+                        <p class="card-meta">10 novembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Points%20sur%20les%20i%2012_11_2022.pdf" target="_self" rel="noopener noreferrer" title="Les points sur les i">
+                    <div class="card-preview"><img src="previews/Points sur les i 12_11_2022_page-0001.jpg" alt="Les points sur les i"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Les points sur les i</h3>
+                        <p class="card-meta">12 novembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Le%20saviez-vous%2012_11_2022.pdf" target="_self" rel="noopener noreferrer" title="Le saviez-vous ?">
+                    <div class="card-preview"><img src="previews/Le saviez-vous 12_11_2022_page-0001.jpg" alt="Le saviez-vous ?"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Le saviez-vous ?</h3>
+                        <p class="card-meta">12 novembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Radar%20Travail%20et%20Environnement%2009_11_2022.pdf" target="_self" rel="noopener noreferrer" title="Radar Travail et Environnement">
+                    <div class="card-preview"><img src="previews/Radar Travail et Environnement 09_11_2022_page-0001.jpg" alt="Radar Travail et Environnement"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Radar Travail et Environnement</h3>
+                        <p class="card-meta">9 novembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Les%20Navettes%20Quelle%20Gal%C3%A8re%2009_11_2022.pdf" target="_self" rel="noopener noreferrer" title="Les navettes, quelle galère !">
+                    <div class="card-preview"><img src="previews/Les Navettes Quelle Galère 09_11_2022_page-0001.jpg" alt="Les navettes, quelle galère !"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Les navettes, quelle galère !</h3>
+                        <p class="card-meta">9 novembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Retour%20Sondage%20CGT%20Navettes%20Octobre%202022.pdf" target="_self" rel="noopener noreferrer" title="Retour du sondage CGT sur les navettes">
+                    <div class="card-preview"><img src="previews/Retour Sondage CGT Navettes Octobre 2022_page-0001.jpg" alt="Retour du sondage CGT sur les navettes"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Retour du sondage CGT sur les navettes</h3>
+                        <p class="card-meta">24 octobre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Ce%20que%20veulent%20les%20Cadres%20-Synth%C3%A8se%20Barom%C3%A8tre%20Cadres%20UGICT%20Viavoice%20octobre%202022.pdf" target="_self" rel="noopener noreferrer" title="Ce que veulent les cadres — Baromètre UGICT / Viavoice">
+                    <div class="card-preview"><img src="previews/Ce que veulent les Cadres -Synthèse Baromètre Cadres UGICT Viavoice octobre 2022_page-0001.jpg" alt="Ce que veulent les cadres — Baromètre UGICT / Viavoice"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Ce que veulent les cadres — Baromètre UGICT / Viavoice</h3>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Manif29septembre%20CandidaturesElection.pdf" target="_self" rel="noopener noreferrer" title="Manif du 29 septembre — Candidatures aux élections">
+                    <div class="card-preview"><img src="previews/Manif29septembre CandidaturesElection_page-0001.jpg" alt="Manif du 29 septembre — Candidatures aux élections"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Manif du 29 septembre — Candidatures aux élections</h3>
+                        <p class="card-meta">27 septembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract%20demenagement%2006-09-22.pdf" target="_self" rel="noopener noreferrer" title="Déménagement : la CGT vous informe">
+                    <div class="card-preview"><img src="previews/Tract demenagement 06-09-22_page-0001.jpg" alt="Déménagement : la CGT vous informe"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Déménagement : la CGT vous informe</h3>
+                        <p class="card-meta">5 septembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract%20br%C3%A8ves%20d%27%C3%A9t%C3%A9.pdf" target="_self" rel="noopener noreferrer" title="Brèves d&#x27;été">
+                    <div class="card-preview"><img src="previews/Tract brèves d&#x27;été_page-0001.jpg" alt="Brèves d&#x27;été"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Brèves d&#x27;été</h3>
+                        <p class="card-meta">16 septembre 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract%20CGT%20desaccords%20en%20cascade%2003-06-2022.pdf" target="_self" rel="noopener noreferrer" title="Désaccords en cascade">
+                    <div class="card-preview"><img src="previews/Tract CGT desaccords en cascade 03-06-2022_page-0001.jpg" alt="Désaccords en cascade"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Désaccords en cascade</h3>
+                        <p class="card-meta">3 juin 2022</p>
+                    </div>
+                </a>
+                <a class="card" href="https://nokia.sharepoint.com/sites/CGT39/Shared%20Documents/salari%C3%A9s/tracts%20diffus%C3%A9s/tracts_html_files/copies/Tract_Sant%C3%A9_Pr%C3%A9voyance_Mars_2022%20nps.pdf" target="_self" rel="noopener noreferrer" title="Santé et Prévoyance — ce qui change en 2022">
+                    <div class="card-preview"><img src="previews/Tract_Santé_Prévoyance_Mars_2022 nps_page-0001.jpg" alt="Santé et Prévoyance — ce qui change en 2022"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Santé et Prévoyance — ce qui change en 2022</h3>
+                        <p class="card-meta">7 mars 2022</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+        </div>
+    </div>
+
+
+</body>
+</html>

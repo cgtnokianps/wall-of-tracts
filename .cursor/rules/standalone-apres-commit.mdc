@@ -1,5 +1,5 @@
 ---
-description: Avant un commit, mettre a jour METHODE_SYNC_EXCEL.md si besoin, puis generer la page autonome
+description: Avant un commit, mettre a jour METHODE_SYNC_EXCEL.md si la procedure a change
 alwaysApply: true
 ---
 
@@ -7,12 +7,4 @@ alwaysApply: true
 
 `METHODE_SYNC_EXCEL.md` est la memoire du projet (structure Excel, chemins, procedure). Si le travail a change un usage, une colonne, un fichier ou une procedure, mettre ce `.md` a jour **avant** `git commit`. Ne pas le modifier s'il n'y a rien de nouveau.
 
-`index.html` est la page de test. Ne pas lancer `python build_standalone.py` pendant les modifications intermediaires.
-
-Generer `index_standalone.html` au moment d'un commit qui touche la page, les tracts, les apercus, le bandeau, le logo ou `build_standalone.py`. Lancer la generation avant `git commit` et inclure le fichier dans ce commit :
-
-```powershell
-python build_standalone.py
-```
-
-Exceptions : lancer la generation tout de suite si l'utilisateur le demande, ou si le changement ne peut pas etre verifie dans `index.html`.
+`tracts_html_files/tracts-cgt-2023-2026.html` est la seule page. Les cartes s'y editent directement. Le logo et le bandeau sont dans `tracts_html_files/images/`, et les apercus dans `tracts_html_files/previews/`. Il n'y a pas de script de generation.
